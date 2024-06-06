@@ -1,72 +1,113 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Tables {% endblock %}
-
-<!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block title %} Tickets {% endblock %}
 
 {% block content %}
-
-    <div class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card strpied-tabled-with-hover">
-                        <div class="card-header ">
-                            <h4 class="card-title">Ticket supervisor data</h4>
-                            {% if current_user.is_admin %}
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTicketModal">Add ticket</button>
-                            {% endif %}
-                        </div>
-                        <div class="card-body table-full-width table-responsive">
-                            <table class="table table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Utente apertura</th>
-                                        <th>Utente segnalato</th>
-                                        <th>ID task</th>
-                                        <th>Note</th>
-                                        <th>Tag</th>
-                                        <th>Data apertura</th>
-                                        <th>Data chiusura</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for ticket in tickets %}
-                                    <tr>
-                                        <td>{{ ticket.id }}</td>
-                                        <td>{{ ticket.utente_apertura }}</td>
-                                        <td>{{ ticket.utente_segnalato }}</td>
-                                        <td>{{ ticket.id_task }}</td>
-                                        <td>{{ ticket.note }}</td>
-                                        <td>{{ ticket.tag }}</td>
-                                        <td>{{ ticket.data_apertura }}</td>
-                                        <td>{{ ticket.data_chiusura }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card strpied-tabled-with-hover">
+                    <div class="card-header ">
+                        <h4 class="card-title">Ticket Supervisor Data</h4>
+                        {% if current_user.is_authenticated %}
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTicketModal">Add ticket</button>
+                        {% endif %}
+                    </div>
+                    <div class="card-body table-full-width table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Utente Apertura</th>
+                                    <th>Utente Segnalato</th>
+                                    <th>ID Task</th>
+                                    <th>Note</th>
+                                    <th>Tag</th>
+                                    <th>Data Apertura</th>
+                                    <th>Data Chiusura</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in tickets %}
+                                <tr>
+                                    <td>{{ ticket.id }}</td>
+                                    <td>{{ ticket.utente_apertura }}</td>
+                                    <td>{{ ticket.utente_segnalato }}</td>
+                                    <td>{{ ticket.id_task }}</td>
+                                    <td>{{ ticket.note }}</td>
+                                    <td>{{ ticket.tag }}</td>
+                                    <td>{{ ticket.data_apertura }}</td>
+                                    <td>{{ ticket.data_chiusura }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock content %}
+</div>
 
-<!-- Specific Page JS goes HERE  -->
+<!-- add ticket modal -->
+<div class="modal fade" id="addTicketModal" tabindex="-1" role="dialog" aria-labelledby="addTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTicketModalLabel">Add ticket</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('tickets_blueprint.tickets') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.utente_apertura.label }} 
+                        {{ form.utente_apertura(class_='form-control') }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.utente_segnalato.label }} 
+                        {{ form.utente_segnalato(class_='form-control') }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.id_task.label }} 
+                        {{ form.id_task(class_='form-control') }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.note.label }} 
+                        {{ form.note(class_='form-control') }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.tag.label }} 
+                        {{ form.tag(class_='form-control') }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.data_apertura.label }} 
+                        {{ form.data_apertura(class_='form-control') }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.data_chiusura.label }} 
+                        {{ form.data_chiusura(class_='form-control') }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add ticket</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block javascripts %}
 
-<!--
 <script type="text/javascript">
     $(document).ready(function() {
-        // Javascript method's body can be found in assets/js/demos.js
-        demo.initDashboardPageCharts();
-
-        demo.showNotification();
-
+        // Date pickers for the form fields
+        $('input[type="datetime-local"]').datetimepicker({
+            format: 'd-m-Y H:i:s'
+        });
     });
+    
 </script>
--->
-{% endblock javascripts %}
+{% endblock %}

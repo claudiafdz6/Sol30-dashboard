@@ -6,6 +6,8 @@ from apps import db, login_manager
 
 from apps.authentication.util import hash_pass
 
+from datetime import datetime
+
 class Users(db.Model, UserMixin):
 
     __tablename__ = 'Users'
@@ -14,6 +16,7 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(64), unique=True)
     password = db.Column(db.LargeBinary)
+    #is_admin = db.Column(db.Boolean, default=False)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -31,6 +34,20 @@ class Users(db.Model, UserMixin):
 
     def __repr__(self):
         return str(self.username)
+    
+
+class TicketSupervisor(db.Model, UserMixin):
+
+    __tablename__ = 'TicketSupervisor'
+
+    id = db.Column(db.Integer, primary_key=True)
+    utente_apertura = db.Column(db.String(64), nullable=False)
+    utente_segnalato = db.Column(db.String(64), nullable=False)
+    id_task = db.Column(db.String(64), nullable=False)
+    note = db.Column(db.Text, nullable=True)
+    tag = db.Column(db.String(64), nullable=True)
+    data_apertura = db.Column(db.DateTime, default=datetime)
+    data_chiusura = db.Column(db.DateTime, nullable=True)
 
 
 @login_manager.user_loader

@@ -18,7 +18,7 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
-    for module_name in ('authentication', 'home'):
+    for module_name in ('authentication', 'home', 'tickets'):
         module = import_module('apps.{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
 
@@ -39,6 +39,7 @@ def configure_database(app):
 
             print('> Fallback to SQLite ')
             db.create_all()
+
 
     @app.teardown_request
     def shutdown_session(exception=None):
