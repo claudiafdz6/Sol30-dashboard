@@ -51,7 +51,7 @@
 </div>
 
 <!-- add ticket modal only for admin -->
-<!-- {% if current_user.is_authenticated and current_user.is_admin %} -->
+{% if current_user.is_authenticated and current_user.is_admin %}
 <div class="modal fade" id="addTicketModal" tabindex="-1" role="dialog" aria-labelledby="addTicketModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -64,6 +64,10 @@
             <div class="modal-body">
                 <form method="POST" action="{{ url_for('tickets_blueprint.tickets') }}">
                     {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.id.label }} 
+                        {{ form.id(class_='form-control') }}
+                    </div>
                     <div class="form-group">
                         {{ form.utente_apertura.label }} 
                         {{ form.utente_apertura(class_='form-control') }}
@@ -98,7 +102,7 @@
         </div>
     </div>
 </div>
-<!-- {% endif %} -->
+{% endif %}
 {% endblock %}
 
 {% block javascripts %}
