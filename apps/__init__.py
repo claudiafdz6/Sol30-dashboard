@@ -6,6 +6,8 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from importlib import import_module
+# from apps.authentication.models import Users
+
 
 
 db = SQLAlchemy()
@@ -29,6 +31,7 @@ def configure_database(app):
     def initialize_database():
         try:
             db.create_all()
+            # create_default_users() #create users
         except Exception as e:
 
             print('> Error: DBMS Exception: ' + str(e) )
@@ -39,6 +42,7 @@ def configure_database(app):
 
             print('> Fallback to SQLite ')
             db.create_all()
+            # create_default_users()
 
 
     @app.teardown_request
@@ -53,3 +57,12 @@ def create_app(config):
     register_blueprints(app)
     configure_database(app)
     return app
+
+# def create_default_users():
+#     admin = Users(username='admin', email='admin@gmail.com', password='admin', is_admin=True)
+#     user1 = Users(username='user1', email='user1@gmail.com', password='user1', is_admin=False)
+#     user2 = Users(username='user2', email='user2@gmail.com', password='user2', is_admin=False)
+#     db.session.add(admin)
+#     db.session.add(user1)
+#     db.session.add(user2)
+#     db.session.commit()

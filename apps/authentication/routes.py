@@ -59,7 +59,7 @@ def register():
         username = request.form['username']
         email = request.form['email']
 
-        # Check usename exists
+        # Check if username exists
         user = Users.query.filter_by(username=username).first()
         if user:
             return render_template('accounts/register.html',
@@ -67,7 +67,7 @@ def register():
                                    success=False,
                                    form=create_account_form)
 
-        # Check email exists
+        # Check if email exists
         user = Users.query.filter_by(email=email).first()
         if user:
             return render_template('accounts/register.html',

@@ -12,12 +12,14 @@ def index():
     form = TicketForm()
     if form.validate_on_submit():
         new_ticket = TicketSupervisor(
+            id=form.id.data,
             utente_apertura=form.utente_apertura.data,
             utente_segnalato=form.utente_segnalato.data,
             id_task=form.id_task.data,
             note=form.note.data,
             tag=form.tag.data,
-            data_apertura=form.data_apertura.data
+            data_apertura=form.data_apertura.data,
+            data_chiusura=form.data_chiusura.data
         )
         db.session.add(new_ticket)
         db.session.commit()

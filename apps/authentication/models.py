@@ -16,7 +16,7 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(64), unique=True)
     password = db.Column(db.LargeBinary)
-    #is_admin = db.Column(db.Boolean, default=False)
+    # is_admin = db.Column(db.Boolean, default=False)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -48,6 +48,9 @@ class TicketSupervisor(db.Model, UserMixin):
     tag = db.Column(db.String(64), nullable=True)
     data_apertura = db.Column(db.DateTime, default=datetime)
     data_chiusura = db.Column(db.DateTime, nullable=True)
+
+    def __repr__(self):
+        return f'<TicketSupervisor {self.id_task}>'
 
 
 @login_manager.user_loader
