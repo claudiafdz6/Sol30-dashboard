@@ -64,6 +64,10 @@
                 <form method="POST" action="{{ url_for('tickets_blueprint.tickets') }}">
                     {{ form.hidden_tag() }}
                     <div class="form-group">
+                        {{ form.id.label }} 
+                        {{ form.id(class_='form-control') }}
+                    </div>
+                    <div class="form-group">
                         {{ form.utente_apertura.label }} 
                         {{ form.utente_apertura(class_='form-control') }}
                     </div>

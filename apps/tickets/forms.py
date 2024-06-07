@@ -5,6 +5,7 @@ from wtforms import StringField, TextAreaField, DateTimeField
 from wtforms.validators import DataRequired
 
 class TicketForm(FlaskForm):
+    id = StringField('id', validators=[DataRequired()])
     utente_apertura = StringField('Utente apertura', validators=[DataRequired()])
     utente_segnalato = StringField('Utente segnalato', validators=[DataRequired()])
     id_task = StringField('ID task', validators=[DataRequired()])
