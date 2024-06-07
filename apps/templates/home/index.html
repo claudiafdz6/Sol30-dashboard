@@ -3,20 +3,23 @@
 {% block title %} Tickets {% endblock %}
 
 {% block content %}
-<div class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card strpied-tabled-with-hover">
-                    <div class="card-header ">
-                        <h4 class="card-title">Ticket Supervisor Data</h4>
-                        {% if current_user.is_authenticated %}
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTicketModal">Add ticket</button>
-                        {% endif %}
-                    </div>
-                    <div class="card-body table-full-width table-responsive">
-                        <table class="table table-hover table-striped">
-                            <thead>
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card strpied-tabled-with-hover">
+                        <div class="card-header ">
+                            <h4 class="card-title">Ticket Supervisor Data</h4>
+                            {#    is_authenticated or is_admin? #}
+                            {% if current_user.is_authenticated %}
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#addTicketModal">Add ticket
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div class="card-body table-full-width table-responsive">
+                            <table class="table table-hover table-striped">
+                                <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Utente Apertura</th>
@@ -27,91 +30,94 @@
                                     <th>Data Apertura</th>
                                     <th>Data Chiusura</th>
                                 </tr>
-                            </thead>
-                            <tbody>
+                                </thead>
+                                <tbody>
                                 {% for ticket in tickets %}
-                                <tr>
-                                    <td>{{ ticket.id }}</td>
-                                    <td>{{ ticket.utente_apertura }}</td>
-                                    <td>{{ ticket.utente_segnalato }}</td>
-                                    <td>{{ ticket.id_task }}</td>
-                                    <td>{{ ticket.note }}</td>
-                                    <td>{{ ticket.tag }}</td>
-                                    <td>{{ ticket.data_apertura }}</td>
-                                    <td>{{ ticket.data_chiusura }}</td>
-                                </tr>
+                                    <tr>
+                                        <td>{{ ticket.id }}</td>
+                                        <td>{{ ticket.utente_apertura }}</td>
+                                        <td>{{ ticket.utente_segnalato }}</td>
+                                        <td>{{ ticket.id_task }}</td>
+                                        <td>{{ ticket.note }}</td>
+                                        <td>{{ ticket.tag }}</td>
+                                        <td>{{ ticket.data_apertura }}</td>
+                                        <td>{{ ticket.data_chiusura }}</td>
+                                    </tr>
                                 {% endfor %}
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- add ticket modal only for admin -->
-<div class="modal fade" id="addTicketModal" tabindex="-1" role="dialog" aria-labelledby="addTicketModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTicketModalLabel">Add ticket</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="{{ url_for('tickets_blueprint.tickets') }}">
-                    {{ form.hidden_tag() }}
-                    <div class="form-group">
-                        {{ form.id.label }} 
-                        {{ form.id(class_='form-control') }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.utente_apertura.label }} 
-                        {{ form.utente_apertura(class_='form-control') }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.utente_segnalato.label }} 
-                        {{ form.utente_segnalato(class_='form-control') }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.id_task.label }} 
-                        {{ form.id_task(class_='form-control') }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.note.label }} 
-                        {{ form.note(class_='form-control') }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.tag.label }} 
-                        {{ form.tag(class_='form-control') }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.data_apertura.label }} 
-                        {{ form.data_apertura(class_='form-control') }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.data_chiusura.label }} 
-                        {{ form.data_chiusura(class_='form-control') }}
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add ticket</button>
-                </form>
+    <!-- add ticket modal only for admin -->
+    <div class="modal fade" id="addTicketModal" tabindex="-1" role="dialog" aria-labelledby="addTicketModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTicketModalLabel">Add ticket</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('tickets_blueprint.tickets') }}">
+                        {{ form.hidden_tag() }}
+{#                        <div class="form-group">#}
+{#                            {{ form.id.label }}#}
+{#                            {{ form.id(class_='form-control') }}#}
+{#                        </div>#}
+{#                        <div class="form-group">#}
+{#                            {{ form.utente_apertura.label }}#}
+{#                            {{ form.utente_apertura(class_='form-control') }}#}
+{#                        </div>#}
+                        <div class="form-group">
+                            {{ form.utente_segnalato.label }}
+                            {{ form.utente_segnalato(class_='form-control') }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.id_task.label }}
+                            {{ form.id_task(class_='form-control') }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.note.label }}
+                            {{ form.note(class_='form-control') }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.tag.label }}
+                            {{ form.tag(class_='form-control') }}
+                        </div>
+{#                        <div class="form-group">#}
+{#                            {{ form.data_apertura.label }}#}
+{#                            {{ form.data_apertura(class_='form-control') }}#}
+{#                        </div>#}
+{#                        <div class="form-group">#}
+{#                            {{ form.data_chiusura.label }}#}
+{#                            {{ form.data_chiusura(class_='form-control') }}#}
+{#                        </div>#}
+                        <button type="submit" class="btn btn-primary">Add ticket</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block javascripts %}
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        // Date pickers for the form fields
-        $('input[type="datetime-local"]').datetimepicker({
-            format: 'd-m-Y H:i:s'
-        });
-    });
-    
-</script>
+    <script type="text/javascript">
+        /*
+        questo non ci serve
+            $(document).ready(function() {
+                // Date pickers for the form fields
+                $('input[type="datetime-local"]').datetimepicker({
+                    format: 'd-m-Y H:i:s'
+                });
+            });
+           */
+    </script>
 {% endblock %}

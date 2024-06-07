@@ -46,7 +46,7 @@ class TicketSupervisor(db.Model, UserMixin):
     id_task = db.Column(db.String(64), nullable=False)
     note = db.Column(db.Text, nullable=True)
     tag = db.Column(db.String(64), nullable=True)
-    data_apertura = db.Column(db.DateTime, default=datetime)
+    data_apertura = db.Column(db.DateTime, default=datetime.utcnow)  # <-- datetime.utcnow (oppure datetime.now) al posto di datetime
     data_chiusura = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
