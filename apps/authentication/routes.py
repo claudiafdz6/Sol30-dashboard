@@ -77,10 +77,6 @@ def register():
 
         # else we can create the user
         user = Users(**request.form)
-
-        # new_user = Users(id='3', username='maria', email='maria@gmail.com', password='maria')
-        # db.session.add(new_user)
-
         db.session.add(user)
         db.session.commit()
 
