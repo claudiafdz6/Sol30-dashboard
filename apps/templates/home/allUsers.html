@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} All Users {% endblock %}
+
+{% block content %}
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card strpied-tabled-with-hover">
+                    <div class="card-header ">
+                        <h4 class="card-title">All Users</h4>
+                            <ul>
+                                {% for user in users %}
+                                <li>{{ user.username }} (a href="{{ url_for('user', username=user.username)
+                                    }}">{{ user.username }}</a></li>
+                                {% endfor %}
+                    </div>
+                    <div class="card-body table-full-width table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Is Admid?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.is_admin }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript">
+    
+</script>
+{% endblock %}
