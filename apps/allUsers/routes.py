@@ -1,40 +1,42 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from apps.authentication.models import Users, db
 from flask_login import login_required, current_user
-from apps import db
-from apps.allUsers.forms import TicketForm
-from apps.authentication.models import TicketSupervisor
 
-blueprint = Blueprint('allUsers_blueprint', __name__)
+blueprint = Blueprint('allUsers_blueprint', __name__, url_prefix='/allUsers')
 
-@blueprint.route('/allUsers', methods=['GET', 'POST'])
+@blueprint.route('/', methods=['GET'])
 @login_required
-def allUsers():
-    form = allUsers()
-    if request.method == 'POST':
-        if current_user.is_admin:
-            show_allUsers = UserInformations()
-
-
-def tickets():
-    form = TicketForm()
-    if request.method == 'POST':
-        if current_user.is_admin:
-            new_ticket = TicketSupervisor(
-                utente_apertura=current_user.username,
-                utente_segnalato=form.utente_segnalato.data,
-                id_task=form.id_task.data,
-                note=form.note.data,
-                tag=form.tag.data,
-            )
-            db.session.add(new_ticket)
-            db.session.commit()
-            flash('The data has been modify', 'success')
-        else:
-            flash('You are not authorized to modify these data.', 'danger')
-        return redirect(url_for('allUsers_blueprint.tickets'))
-    
-
+def all_users():
     if request.method == 'GET':
-        tickets = TicketSupervisor.query.all()
-        return render_template('home/allUsers.html', tickets=tickets, form=form)
- 
+        users = Users.query.all()
+        return render_template('home/allUsers.html', users=users, form=form)
+
+@blueprint.route('/edit', methods=['POST'])
+def edit_user():
+    if request.method == 'POST':
+        if current_user.is_admin:
+            user_id = request.form['id']
+            user = Users.query.get(user_id)
+            
+            if user:
+                user.username = request.form['username']
+                user.email = request.form['email']
+                user.is_admin = 'is_admin' in request.form
+
+                db.session.commit()
+                flash('User updated successfully', 'success')
+            else:
+                flash('User can not be found', 'danger')
+
+            return redirect(url_for('allUsers_blueprint.edit_user'))
+
+@blueprint.route('/delete/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = Users.query.get(user_id)
+    
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False, 'message': 'User not found'}), 404

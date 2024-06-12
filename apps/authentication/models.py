@@ -16,7 +16,8 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(64), unique=True)
     password = db.Column(db.LargeBinary)
-    is_admin = db.Column(db.Boolean, default=False)
+    #by default, all news accounts will have 'null' value and later will be assigned whether they are 'user' or 'admin'
+    is_admin = db.Column(db.Boolean, nullable=True)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():

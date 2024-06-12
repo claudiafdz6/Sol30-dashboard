@@ -25,7 +25,7 @@ def tickets():
             db.session.commit()
             flash('Ticket added', 'success')
         else:
-            flash('You are not authorized to add tickets.', 'danger')
+            flash('You are not authorized to add new tickets.', 'danger')
         return redirect(url_for('tickets_blueprint.tickets'))
     
 

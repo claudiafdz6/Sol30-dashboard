@@ -9,7 +9,6 @@ from importlib import import_module
 # from apps.authentication.models import Users
 
 
-
 db = SQLAlchemy()
 login_manager = LoginManager()
 
@@ -20,7 +19,7 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
-    for module_name in ('authentication', 'home', 'tickets'):
+    for module_name in ('authentication', 'home', 'tickets', 'allUsers'):
         module = import_module('apps.{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
 
@@ -43,7 +42,7 @@ def configure_database(app):
             print('> Fallback to SQLite ')
             db.create_all()
             # create_default_users()
-
+            print(initialize_database)
 
     @app.teardown_request
     def shutdown_session(exception=None):
@@ -66,3 +65,4 @@ def create_app(config):
 #     db.session.add(user1)
 #     db.session.add(user2)
 #     db.session.commit()
+
