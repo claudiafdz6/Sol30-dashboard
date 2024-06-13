@@ -25,7 +25,11 @@ def index():
         db.session.commit()
         flash('Ticket added successfully', 'success')
         return redirect(url_for('home_blueprint.index'))
-    return render_template('home/index.html', segment='index', form=form)
+
+
+    if request.method == 'GET':
+        tickets = TicketSupervisor.query.all()
+        return render_template('home/index.html', tickets=tickets, form=form)
 
 
 @blueprint.route('/<template>')

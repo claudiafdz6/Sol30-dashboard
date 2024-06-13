@@ -10,6 +10,11 @@
                 <div class="card strpied-tabled-with-hover">
                     <div class="card-header ">
                         <h4 class="card-title">All users</h4>
+                        {% if current_user.is_authenticated and current_user.is_admin %}
+                        <button class="btn btn-warning btn-sm edit-user">Edit</button>
+                        <button class="btn btn-danger btn-sm delete-user">Delete</button>
+                        {% endif %}
+
                     </div>
                     <div class="card-body table-full-width table-responsive">
                         <table class="table table-hover table-striped">
@@ -66,7 +71,7 @@
                         <input type="email" class="form-control" id="editEmail" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="is_admin">Is Admin</label>
+                        <label for="is_admin">Is Admin?</label>
                         <input type="checkbox" id="editIsAdmin" name="is_admin">
                     </div>
                 </div>

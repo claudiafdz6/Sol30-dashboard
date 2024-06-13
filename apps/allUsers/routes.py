@@ -33,7 +33,7 @@ def edit_user():
 @blueprint.route('/delete/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user = Users.query.get(user_id)
-    
+        
     if user:
         db.session.delete(user)
         db.session.commit()
