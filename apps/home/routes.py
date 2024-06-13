@@ -38,8 +38,13 @@ def index():
 
 
     if request.method == 'GET':
-        tickets = TicketSupervisor.query.all()
-        return render_template('home/index.html', tickets=tickets, form=form)
+        if current_user.is_admin or current_user.is_admin == 0:
+            tickets = TicketSupervisor.query.all()
+            return render_template('home/index.html', tickets=tickets, form=form)
+        else:
+        # if the account is null
+            return render_template('home/accountError.html')
+
 
 
 @blueprint.route('/<template>')
