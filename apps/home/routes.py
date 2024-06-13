@@ -2,9 +2,20 @@ from apps.home import blueprint
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from apps.tickets.forms import TicketForm
-from apps.authentication.models import TicketSupervisor
+from apps.allUsers.forms import allUsersForm
+from apps.authentication.models import TicketSupervisor, Users
 from apps import db
 from jinja2 import TemplateNotFound
+
+
+@blueprint.route('/allUsers.html', methods=['GET'])
+@login_required
+def all_users():
+    # form = allUsersForm()
+    if request.method == 'GET':
+        users = Users.query.all()
+        return render_template('home/allUsers.html', users=users)
+
 
 @blueprint.route('/index', methods=['GET', 'POST'])
 @login_required
