@@ -7,16 +7,15 @@ from apps.authentication.models import TicketSupervisor, Users
 from apps import db
 from jinja2 import TemplateNotFound
 
-
+#show 'all users' section data
 @blueprint.route('/allUsers.html', methods=['GET'])
 @login_required
 def all_users():
-    # form = allUsersForm()
     if request.method == 'GET':
         users = Users.query.all()
         return render_template('home/allUsers.html', users=users)
 
-
+#'table' section
 @blueprint.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():

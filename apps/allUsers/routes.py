@@ -9,9 +9,9 @@ blueprint = Blueprint('allUsers_blueprint', __name__, url_prefix='/allUsers')
 def all_users():
     if request.method == 'GET':
         users = Users.query.all()
-        return render_template('home/allUsers.html', users=users, form=form)
+        return render_template('home/allUsers.html', users=users)
 
-@blueprint.route('/edit', methods=['POST'])
+@blueprint.route('/', methods=['POST'])
 def edit_user():
     if request.method == 'POST':
         if current_user.is_admin:
@@ -33,7 +33,7 @@ def edit_user():
 @blueprint.route('/delete/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user = Users.query.get(user_id)
-        
+
     if user:
         db.session.delete(user)
         db.session.commit()
