@@ -1,5 +1,9 @@
 {% extends "layouts/base.html" %}
 
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/allUsersStyle.css') }}">
+{% endblock stylesheets %}
+
 {% block title %} All Users {% endblock %}
 
 {% block content %}
