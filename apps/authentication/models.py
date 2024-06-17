@@ -8,6 +8,9 @@ from apps.authentication.util import hash_pass
 
 from datetime import datetime
 
+from zoneinfo import ZoneInfo
+
+
 class Users(db.Model, UserMixin):
 
     __tablename__ = 'Users'
@@ -47,7 +50,8 @@ class TicketSupervisor(db.Model, UserMixin):
     id_task = db.Column(db.String(64), nullable=False)
     note = db.Column(db.Text, nullable=True)
     tag = db.Column(db.String(64), nullable=True)
-    data_apertura = db.Column(db.DateTime, default=datetime.now)
+    #data_apertura = db.Column(db.DateTime, default=datetime.now(ZoneInfo('Europe/Madrid')).strftime('%m/%d/%Y'))
+    data_apertura = db.Column(db.DateTime, default=datetime.now(ZoneInfo('Europe/Madrid')))
     data_chiusura = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
