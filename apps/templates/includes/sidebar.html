@@ -37,6 +37,7 @@ Tip 2: you can also add an image using data-image tag
                     <p>Logout</p>
                 </a>
             </li>
+        </ul>
 
             <!-- when the account is designated as a 'user' -->
             {% elif current_user.is_admin == 0 %}
@@ -60,15 +61,10 @@ Tip 2: you can also add an image using data-image tag
                 </a>
             </li>
 
-            <!-- when the account is created with 'null' value by default -->
+            
             {% else %}
+            <!-- when the account is created with 'null' value by default -->
         
-            <!-- <li class="nav-item nav-item {% if 'index' in segment %} active {% endif %}">
-                <a class="nav-link" href="/">
-                    <i class="nc-icon nc-notes"></i>
-                    <p>Table</p>
-                </a>
-            </li> -->
             <li class="nav-item active">
                 <a class="nav-link active" target="_blank">
                     <i class="nc-icon nc-atom"></i>
