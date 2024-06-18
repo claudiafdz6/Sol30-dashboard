@@ -56,13 +56,3 @@ def create_app(config):
     register_blueprints(app)
     configure_database(app)
     return app
-
-# def create_default_users():
-#     admin = Users(username='admin', email='admin@gmail.com', password='admin', is_admin=True)
-#     user1 = Users(username='user1', email='user1@gmail.com', password='user1', is_admin=False)
-#     user2 = Users(username='user2', email='user2@gmail.com', password='user2', is_admin=False)
-#     db.session.add(admin)
-#     db.session.add(user1)
-#     db.session.add(user2)
-#     db.session.commit()
-
