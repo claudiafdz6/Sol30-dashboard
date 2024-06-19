@@ -42,12 +42,12 @@
                                     <td>{{ ticket.utente_segnalato }}</td>
                                     <td>{{ ticket.id_task }}</td>
                                     <td>{{ ticket.note }} 
-                                        <button class="btn btn-success btn-fill edit-note" data-note="{{ ticket.note }}">Edit</button>
+                                        <button class="btn btn-success btn-fill edit-note" data-id="{{ ticket.id }}" data-note="{{ ticket.note }}">Edit</button>
                                     </td>
                                     <td>{{ ticket.tag }}</td>
-                                    <td>{{ ticket.data_apertura }}</td>
-                                    <td>{{ ticket.data_chiusura }} 
-                                        <button class="btn btn-success btn-fill edit-dataChiusura" data-note="{{ ticket.note }}">Edit</button>
+                                    <td>{{ ticket.formatted_data_apertura() }}</td>
+                                    <td>{{ ticket.formatted_data_chiusura() }} 
+                                        <button class="btn btn-success btn-fill edit-dataChiusura" data-id="{{ ticket.id }}">Edit</button>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -78,8 +78,8 @@
                                     <td>{{ ticket.id_task }}</td>
                                     <td>{{ ticket.note }}</td>
                                     <td>{{ ticket.tag }}</td>
-                                    <td>{{ ticket.data_apertura }}</td>
-                                    <td>{{ ticket.data_chiusura }}</td>
+                                    <td>{{ ticket.formatted_data_apertura() }}</td>
+                                    <td>{{ ticket.formatted_data_chiusura() }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -92,7 +92,7 @@
     </div>
 </div>
 
-<!-- ADD ticket modal only for admin -->
+<!-- ADD ticket modal (only for admin) -->
 <div class="modal fade" id="addTicketModal" tabindex="-1" role="dialog" aria-labelledby="addTicketModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -105,14 +105,6 @@
             <div class="modal-body">
                 <form method="POST" action="{{ url_for('tickets_blueprint.tickets') }}">
                     {{ form.hidden_tag() }}
-    {#                        <div class="form-group">#}
-{#                            {{ form.id.label }}#}
-{#                            {{ form.id(class_='form-control') }}#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            {{ form.utente_apertura.label }}#}
-{#                            {{ form.utente_apertura(class_='form-control') }}#}
-{#                        </div>#}
                     <div class="form-group">
                         {{ form.utente_segnalato.label }} 
                         {{ form.utente_segnalato(class_='form-control') }}
@@ -129,14 +121,6 @@
                         {{ form.tag.label }} 
                         {{ form.tag(class_='form-control') }}
                     </div>
-                    {#                        <div class="form-group">#}
-{#                            {{ form.data_apertura.label }}#}
-{#                            {{ form.data_apertura(class_='form-control') }}#}
-{#                        </div>#}
-{#                        <div class="form-group">#}
-{#                            {{ form.data_chiusura.label }}#}
-{#                            {{ form.data_chiusura(class_='form-control') }}#}
-{#                        </div>#}
                     <button type="submit" class="btn btn-primary">Add ticket</button>
                 </form>
             </div>
@@ -144,23 +128,46 @@
     </div>
 </div>
 
-
-<!-- EDIT (form.data_chiusura) ticket modal only for admin -->
-
-<div class="modal fade" id="editTicketModal" tabindex="-1" role="dialog" aria-labelledby="editTicketModalLabel" aria-hidden="true">
+<!-- EDIT NOTE modal (only for admin) -->
+<div class="modal fade" id="editNoteModal" tabindex="-1" role="dialog" aria-labelledby="editNoteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editTicketModalLabel">Edit Ticket</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="editNoteModalLabel">Edit Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <form id="editTicketForm" method="POST" action="{{ url_for('tickets_blueprint.tickets') }}">
+            <form id="editNoteForm" method="POST" action="{{ url_for('tickets_blueprint.edit_note') }}">
                 <div class="modal-body">
-                    <input type="hidden" name="id" id="editTicketId">
+                    <input type="hidden" name="id" id="editNoteTicketId">
                     <div class="form-group">
                         <label for="note">Note</label>
                         <input type="text" class="form-control" id="editNote" name="note" required>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT DATA CHIUSURA modal (only for admin) -->
+<div class="modal fade" id="editDataChiusuraModal" tabindex="-1" role="dialog" aria-labelledby="editDataChiusuraModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDataChiusuraModalLabel">Edit Data Chiusura</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editDataChiusuraForm" method="POST" action="{{ url_for('tickets_blueprint.edit_data_chiusura') }}">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="editDataChiusuraTicketId">
                     <div class="form-group">
                         <label for="dataChiusura">Data Chiusura</label>
                         <input type="checkbox" class="form-control" id="editDataChiusura" name="dataChiusura" required>
@@ -171,8 +178,8 @@
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
-        <div>
-    <div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
@@ -181,19 +188,29 @@
 
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
-        const editUserButtons = document.querySelectorAll('.edit-note, .edit-dataChiusura');
-        
-        editUserButtons.forEach(button => {
+        // Edit note button
+        const editNoteButton = document.querySelectorAll('.edit-note');
+        editNoteButton.forEach(button => {
             button.addEventListener('click', function () {
                 const ticketId = this.getAttribute('data-id');
                 const note = this.getAttribute('data-note');
-                const dataChiusura = this.getAttribute('data-data_chiusura');
 
-                document.getElementById('editTicketId').value = ticketId;
+                document.getElementById('editNoteTicketId').value = ticketId;
                 document.getElementById('editNote').value = note;
-                document.getElementById('editDataChiusura').checked = dataChiusura;
 
-                $('#editTicketModal').modal('show');
+                $('#editNoteModal').modal('show');
+            });
+        });
+
+        // Edit Data Chiusura Button
+        const editDataChiusuraButton = document.querySelectorAll('.edit-dataChiusura');
+        editDataChiusuraButton.forEach(button => {
+            button.addEventListener('click', function () {
+                const ticketId = this.getAttribute('data-id');
+
+                document.getElementById('editDataChiusuraTicketId').value = ticketId;
+
+                $('#editDataChiusuraModal').modal('show');
             });
         });
     });

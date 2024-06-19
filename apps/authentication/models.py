@@ -50,11 +50,17 @@ class TicketSupervisor(db.Model, UserMixin):
     id_task = db.Column(db.String(64), nullable=False)
     note = db.Column(db.Text, nullable=True)
     tag = db.Column(db.String(64), nullable=True)
-    # data_apertura = db.Column(db.DateTime, default=datetime.now(ZoneInfo('Europe/Rome')).strftime('%d/%m/Y%'))
-    data_apertura = db.Column(db.DateTime, default=datetime.now(ZoneInfo('Europe/Rome')))
-    data_chiusura = db.Column(db.DateTime, nullable=True)
+    data_apertura = db.Column(db.DateTime, default=lambda: datetime.now(ZoneInfo('Europe/Rome')))
+    data_chiusura = db.Column(db.DateTime, nullable=True) #by default the value is null
     def __repr__(self):
         return f'<TicketSupervisor {self.id_task}>'
+    
+    #in order to see the date and time correctly in DD-MM-YYYY & H:M format, it's necessary to format the data using .strftime() method 
+    def formatted_data_apertura(self):
+        return self.data_apertura.strftime('%d/%m/%Y, %H:%M')
+    
+    def formatted_data_chiusura(self):
+        return self.data_chiusura.strftime('%d/%m/%Y, %H:%M') if self.data_chiusura else 'None'
 
 
 @login_manager.user_loader
