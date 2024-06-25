@@ -55,4 +55,5 @@ textarea {
     width: 200em;
     min-height: 10em;
     overflow: auto;
+    text-align: justify;
 }
