@@ -1,3 +1,16 @@
+/* table style */
+.table thead tr th {
+    color: black;
+    font-weight: bold;
+}
+
+.table tbody td {
+    color: black;
+    justify-content: center;
+}
+
+/* button styles */
+
 .btn.btn-success.btn-fill.edit-user {
     margin-left: 20px;
 }

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from apps import db
 from apps.tickets.forms import TicketForm
@@ -20,8 +20,6 @@ def tickets():
                 id_task=form.id_task.data,
                 note=form.note.data,
                 tag=form.tag.data,
-                # data_apertura=form.data_apertura.data,  # <-- default=datetime.utcnow su model
-                # data_chiusura=form.data_chiusura.data # <-- aggiorniamo la data alla chiusura
             )
             db.session.add(new_ticket)
             db.session.commit()
@@ -30,41 +28,42 @@ def tickets():
             flash('You are not authorized to add new tickets.', 'danger')
         return redirect(url_for('tickets_blueprint.tickets'))
     
+    tickets = TicketSupervisor.query.all()
+    return render_template('home/index.html', tickets=tickets, form=form)
 
-    if request.method == 'GET':
-        tickets = TicketSupervisor.query.all()
-        return render_template('home/index.html', tickets=tickets, form=form)
-
-# EDIT_NOTE: only the admin can modify the tickets' note
-@blueprint.route('/edit_note', methods=['POST'])
+@blueprint.route('/edit_ticket', methods=['POST'])
 @login_required
-def edit_note():
+def edit_ticket():
     if current_user.is_admin:
         ticket_id = request.form['id']
         ticket = TicketSupervisor.query.get(ticket_id)
         if ticket:
-            ticket.note = request.form['note']
-            db.session.commit()
-            flash('Note updated successfully', 'success')
+            if ticket.data_chiusura:
+                flash('It is not possible to edit a closed ticket', 'danger')
+            else:
+                ticket.note = request.form['note']
+                db.session.commit()
+                flash('Ticket updated successfully', 'success')
         else:
             flash('Ticket not found', 'danger')
     else:
-        flash('You are not able to edit notes', 'danger')
+        flash('You are not authorized to edit tickets', 'danger')
     return redirect(url_for('tickets_blueprint.tickets'))
 
-# EDIT DATA CHIUSURA: only the admin can modify the tickets' data_chiusura
-@blueprint.route('/edit_data_chiusura', methods=['POST'])
+@blueprint.route('/close_ticket', methods=['POST'])
 @login_required
-def edit_data_chiusura():
+def close_ticket():
     if current_user.is_admin:
-        ticket_id = request.form['id']
+        data = request.get_json()
+        ticket_id = data['id']
         ticket = TicketSupervisor.query.get(ticket_id)
         if ticket:
+            if ticket.data_chiusura:
+                return jsonify(success=False, message='Ticket is already closed'), 400
             ticket.data_chiusura = datetime.now(ZoneInfo('Europe/Rome'))
             db.session.commit()
-            flash('Data Chiusura updated successfully', 'success')
+            return jsonify(success=True)
         else:
-            flash('Ticket not found', 'danger')
+            return jsonify(success=False, message='Ticket not found'), 404
     else:
-        flash('You are not authorized to edit the data chiusura', 'danger')
-    return redirect(url_for('tickets_blueprint.tickets'))
+        return jsonify(success=False, message='You are not authorized'), 403

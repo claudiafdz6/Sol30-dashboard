@@ -1,7 +1,58 @@
-.btn.btn-success.btn-fill.edit-note {
-    margin-left: 20px;
+/* table style */
+.table thead tr th {
+    color: black;
+    font-weight: bold;
 }
 
-.btn.btn-success.btn-fill.edit-dataChiusura{
-    margin-left: 20px;
+.table tbody td {
+    color: black;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;  /**** limit amount of text visible in a column ****/
+    max-width: 200px;
+    overflow: hidden;
+
+}
+
+/******* magnifying glass icon styles *******/
+.transparent-button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.transparent-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/************* modals style ***************/
+.readonly {
+    background-color: #e9ecef;
+    pointer-events: none;
+}
+
+.modal-dialog {
+    max-width: 800px;
+    margin: 1.75rem auto;
+}
+
+.modal-content {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.modal-body {
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+}
+
+/********** textarea styles ********/
+textarea {
+    border: ridge 2px;
+    padding: 5px;
+    width: 200em;
+    min-height: 10em;
+    overflow: auto;
 }
