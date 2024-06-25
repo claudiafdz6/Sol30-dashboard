@@ -37,18 +37,17 @@
                                 {% for ticket in tickets %}
                                 <tr>
                                     <td>
-                                        <!-- The magnifying glass icon is only shown if "data_chiusura" is "None"-->
-                                        {% if ticket.data_chiusura is none %}
-                                            {% if current_user.is_admin %}
-                                            <button class="transparent-button edit-ticket" data-id="{{ ticket.id }}" data-note="{{ ticket.note }}" data-chiusura="{{ ticket.data_chiusura }}">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                            {% else %}
-                                            <button class="transparent-button view-ticket" data-note="{{ ticket.note }}">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                            {% endif %}
+                                        <!-- The magnifying glass icon is shown whenever if "data_chiusura" is "None" or has been closed -->
+                                        {% if current_user.is_admin %}
+                                        <button class="transparent-button edit-ticket" data-id="{{ ticket.id }}" data-note="{{ ticket.note }}" data-chiusura="{{ ticket.data_chiusura }}">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        {% else %}
+                                        <button class="transparent-button view-ticket" data-note="{{ ticket.note }}">
+                                            <i class="fa fa-search"></i>
+                                        </button>
                                         {% endif %}
+                                        
                                     </td>
                                     <td>{{ ticket.id }}</td>
                                     <td>{{ ticket.utente_apertura }}</td>
