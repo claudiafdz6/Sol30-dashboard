@@ -48,6 +48,10 @@
     overflow-y: auto;
 }
 
+.modal-title {
+    font-weight: bold;
+}
+
 /********** textarea styles ********/
 textarea {
     border: ridge 2px;

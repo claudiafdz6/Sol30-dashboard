@@ -184,10 +184,6 @@
 {% block javascripts %}
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
-        function autoResize(textarea) {
-            textarea.style.height = 'auto'; // Reset height to automatic to recalculate
-            textarea.style.height = textarea.scrollHeight + 'px'; // adjust textarea's content height
-        }
 
         // Edit ticket button
         const editTicketButton = document.querySelectorAll('.edit-ticket');
@@ -211,7 +207,6 @@
                 } else {
                     editNoteElement.disabled = false; // enable textarea
                     editNoteElement.value = note; // show content in textarea
-                    autoResize(editNoteElement); // adjust textarea height
                     saveChangesButton.disabled = false;
                     closeTicketButton.disabled = false;
                 }
@@ -228,7 +223,6 @@
 
                 const viewNoteElement = document.getElementById('viewNote');
                 viewNoteElement.value = note;
-                autoResize(viewNoteElement); // adjust textarea height
 
                 $('#viewNoteModal').modal('show');
             });
