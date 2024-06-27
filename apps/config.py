@@ -6,6 +6,10 @@ class Config(object):
 
     basedir = os.path.abspath(os.path.dirname(__file__))
 
+    UPLOAD_FOLDER = os.path.join(basedir, 'static/assets/img/')
+
+    UPLOAD_PATH = os.environ.get('UPLOAD_PATH')
+
     # Assets Management
     ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
 

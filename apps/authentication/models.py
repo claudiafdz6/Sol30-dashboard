@@ -10,6 +10,12 @@ from datetime import datetime
 
 from zoneinfo import ZoneInfo
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Length, Email
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+    
+
 
 class Users(db.Model, UserMixin):
 
@@ -52,6 +58,9 @@ class TicketSupervisor(db.Model, UserMixin):
     tag = db.Column(db.String(64), nullable=True)
     data_apertura = db.Column(db.DateTime, default=lambda: datetime.now(ZoneInfo('Europe/Rome')))
     data_chiusura = db.Column(db.DateTime, nullable=True) #by default the value is null
+    # image = db.Column(db.String(256), nullable=True) 
+    image = FileField('Image', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
+    
     def __repr__(self):
         return f'<TicketSupervisor {self.id_task}>'
     

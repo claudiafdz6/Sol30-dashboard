@@ -97,7 +97,13 @@
                         {{ form.tag.label }} 
                         {{ form.tag(class_='form-control') }}
                     </div>
-                    <button type="submit" class="btn btn-primary">Add ticket</button>
+                    <!-- image filed to be able to upload a photo-->
+                    <div class="form-group">
+                        <label for="filee">Carica una foto</label>
+                        <input type="file" class="form-control" id="file" name="file">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-fill">Add ticket</button>
                 </form>
             </div>
         </div>
@@ -121,7 +127,16 @@
                     <div class="form-group">
                         <label for="note">Note</label>
                         <textarea class="form-control" id="editNote" name="note" rows="10" required></textarea>
+                        
+                        <label for="ticketImage">Image</label>
+                        <br>
+                        <img id="ticketsImage" src="static/assets/img/HP-laptop.jpg" alt="Ticket Image" style="width: 50%; max-width: 300px;">
+
                     </div>
+
+                    <div id="ticketImageContainer">
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-fill" data-dismiss="modal">Close</button>
@@ -191,12 +206,24 @@
                 const ticketId = this.getAttribute('data-id');
                 const note = this.getAttribute('data-note');
                 const chiusura = this.getAttribute('data-chiusura') !== 'None';
+                const imageUrl = this.getAttribute('data-image-url');
  
                 document.getElementById('editTicketId').value = ticketId;
 
                 const editNoteElement = document.getElementById('editNote');
                 const saveChangesButton = document.getElementById('saveChangesButton');
                 const closeTicketButton = document.getElementById('closeTicketButton');
+                
+                const ticketImageContainer = document.getElementById('ticketImageContainer');
+                const ticketImage = document.getElementById('ticketImage');
+
+                if (imageUrl) {
+                    ticketImage.src = imageUrl;
+                    ticket.src= imgUrl;
+                    ticketImageContainer.style.display = 'block';
+                } else {
+                    ticketImageContainer.style.display = 'none';
+                }
 
                 if (chiusura) {
                     editNoteElement.disabled = true; // unenable textarea

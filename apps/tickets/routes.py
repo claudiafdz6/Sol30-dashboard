@@ -5,6 +5,9 @@ from apps.tickets.forms import TicketForm
 from apps.authentication.models import TicketSupervisor
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import os
+from flask import current_app
+from werkzeug.utils import secure_filename
 
 blueprint = Blueprint('tickets_blueprint', __name__)
 
@@ -14,12 +17,21 @@ def tickets():
     form = TicketForm()
     if request.method == 'POST':
         if current_user.is_admin:
+            file = request.files.get('file')
+            filename = None
+            if file:
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                filename = os.path.join('static/assets/img/', filename)
+                
             new_ticket = TicketSupervisor(
                 utente_apertura=current_user.username,
                 utente_segnalato=form.utente_segnalato.data,
                 id_task=form.id_task.data,
                 note=form.note.data,
                 tag=form.tag.data,
+                image=filename  # added an image column in the model
             )
             db.session.add(new_ticket)
             db.session.commit()
@@ -30,6 +42,7 @@ def tickets():
     
     tickets = TicketSupervisor.query.all()
     return render_template('home/index.html', tickets=tickets, form=form)
+
 
 @blueprint.route('/edit_ticket', methods=['POST'])
 @login_required
@@ -67,3 +80,14 @@ def close_ticket():
             return jsonify(success=False, message='Ticket not found'), 404
     else:
         return jsonify(success=False, message='You are not authorized'), 403
+
+#to upload photo into the bd
+@blueprint.route('/upload_photo', methods=['GET', 'POST'])
+def index():
+	if request.method == 'POST':
+		file = request.files['file']
+		upload = TicketSupervisor(data=file.read())
+		db.session.add(upload)
+		db.session.commit()
+		return f'Uploaded'
+	return render_template('index.html')
