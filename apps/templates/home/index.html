@@ -129,7 +129,7 @@
                         
                         <label for="ticketImage">Uploaded image</label>
                         <br>
-                        <img id="ticketsImage" src="" alt="Ticket Image" style="width: 100%; max-width: 1500px;">
+                        <img id="ticketsImage" src="" alt="Ticket Image" style="width: 100%; max-width: 8000px;">
 
                     </div> 
                   
@@ -165,8 +165,9 @@
                     <label for="ticketImage">Uploaded image</label>
                     <br>
                     <!-- <img id="ticketImage" src="static/assets/img/HP-laptop.jpg" alt="Ticket Image" style="width: 100%; max-width: 1500px;" -->
-                    <img id="ticketImage" src="" alt="Ticket Image" style="width: 100%; max-width: 1500px;">
+                    <img id="ticketsImage" src="" alt="Ticket Image" style="width: 100%; max-width: 800px;">
                 </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-fill" data-dismiss="modal">Close</button>
@@ -258,7 +259,7 @@
 
                 const imageUrl = this.getAttribute('data-image-url');
     
-                const ticketImageElement = document.getElementById('ticketImage');
+                const ticketImageElement = document.getElementById('ticketsImage');
                 if (imageUrl) {
                     ticketImageElement.src = imageUrl;
                     ticketImageElement.style.display = 'block';
