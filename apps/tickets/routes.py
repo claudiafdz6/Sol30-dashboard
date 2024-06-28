@@ -31,7 +31,7 @@ def tickets():
                 id_task=form.id_task.data,
                 note=form.note.data,
                 tag=form.tag.data,
-                image=filename  # added an image column in the model
+                image=filename  # save the image path to the database
             )
             db.session.add(new_ticket)
             db.session.commit()

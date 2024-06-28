@@ -79,7 +79,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{{ url_for('tickets_blueprint.tickets') }}">
+                <form method="POST" action="{{ url_for('tickets_blueprint.tickets') }}" enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
                     <div class="form-group">
                         {{ form.utente_segnalato.label }} 
@@ -99,10 +99,9 @@
                     </div>
                     <!-- image filed to be able to upload a photo-->
                     <div class="form-group">
-                        <label for="filee">Carica una foto</label>
+                        <label for="file">Carica una foto</label>
                         <input type="file" class="form-control" id="file" name="file">
                     </div>
-                    
                     <button type="submit" class="btn btn-primary btn-fill">Add ticket</button>
                 </form>
             </div>
@@ -128,12 +127,12 @@
                         <label for="note">Note</label>
                         <textarea class="form-control" id="editNote" name="note" rows="10" required></textarea>
                         
-                        <label for="ticketImage">Image</label>
+                        <label for="ticketImage">Uploaded image</label>
                         <br>
-                        <img id="ticketsImage" src="static/assets/img/HP-laptop.jpg" alt="Ticket Image" style="width: 50%; max-width: 300px;">
+                        <img id="ticketsImage" src="" alt="Ticket Image" style="width: 50%; max-width: 300px;">
 
-                    </div>
-
+                    </div> 
+                  
                     <div id="ticketImageContainer">
                     </div>
 
@@ -162,6 +161,11 @@
                 <div class="form-group">
                     <label for="viewNote">Note</label>
                     <textarea class="form-control" id="viewNote" rows="5" readonly></textarea>
+
+                    <label for="ticketImage">Uploaded image</label>
+                    <br>
+                    <!-- <img id="ticketImage" src="static/assets/img/HP-laptop.jpg" alt="Ticket Image" style="width: 100%; max-width: 1500px;" -->
+                    <img id="ticketImage" src="" alt="Ticket Image" style="width: 100%; max-width: 1500px;">
                 </div>
             </div>
             <div class="modal-footer">
@@ -197,8 +201,8 @@
 
 {% block javascripts %}
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
 
+    document.addEventListener('DOMContentLoaded', function () {
         // Edit ticket button
         const editTicketButton = document.querySelectorAll('.edit-ticket');
         editTicketButton.forEach(button => {
@@ -207,13 +211,15 @@
                 const note = this.getAttribute('data-note');
                 const chiusura = this.getAttribute('data-chiusura') !== 'None';
                 const imageUrl = this.getAttribute('data-image-url');
- 
+    
                 document.getElementById('editTicketId').value = ticketId;
-
+    
                 const editNoteElement = document.getElementById('editNote');
                 const saveChangesButton = document.getElementById('saveChangesButton');
                 const closeTicketButton = document.getElementById('closeTicketButton');
-                
+    
+                editNoteElement.value = note;
+
                 const ticketImageContainer = document.getElementById('ticketImageContainer');
                 const ticketImage = document.getElementById('ticketImage');
 
@@ -224,7 +230,7 @@
                 } else {
                     ticketImageContainer.style.display = 'none';
                 }
-
+    
                 if (chiusura) {
                     editNoteElement.disabled = true; // unenable textarea
                     editNoteElement.value = note; // show content in textarea
@@ -236,20 +242,30 @@
                     saveChangesButton.disabled = false;
                     closeTicketButton.disabled = false;
                 }
-                
+    
                 $('#editTicketModal').modal('show');
             });
         });
-
+    
         // View ticket button for non-admin users
-        const viewTicketButton = document.querySelectorAll('.view-ticket');
-        viewTicketButton.forEach(button => {
+        const viewNoteButton = document.querySelectorAll('.view-ticket');
+        viewNoteButton.forEach(button => {
             button.addEventListener('click', function () {
                 const note = this.getAttribute('data-note');
 
                 const viewNoteElement = document.getElementById('viewNote');
                 viewNoteElement.value = note;
 
+                const imageUrl = this.getAttribute('data-image-url');
+    
+                const ticketImageElement = document.getElementById('ticketImage');
+                if (imageUrl) {
+                    ticketImageElement.src = imageUrl;
+                    ticketImageElement.style.display = 'block';
+                } else {
+                    ticketImageElement.style.display = 'none';
+                }
+    
                 $('#viewNoteModal').modal('show');
             });
         });
