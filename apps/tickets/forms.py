@@ -13,3 +13,4 @@ class TicketForm(FlaskForm):
     tag = StringField('Tag')
     # data_apertura = DateTimeField('Data apertura', format='%d-%m-%Y %H:%M:%S', validators=[DataRequired()])
     # data_chiusura = DateTimeField('Data chiusura', format='%d-%m-%Y %H:%M:%S')
+    image = StringField('Image')
