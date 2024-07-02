@@ -97,10 +97,10 @@
                         {{ form.tag.label }} 
                         {{ form.tag(class_='form-control') }}
                     </div>
-                    <!-- image filed to be able to upload a photo-->
+                    <!-- image filed added to be able to upload a photo-->
                     <div class="form-group">
-                        <label for="filee">Carica una foto</label>
-                        <input type="file" class="form-control" id="file" name="file">
+                        <label for="filee">Carica una foto &#40;.jpg, .jpeg, .png&#41;</label>
+                        <input type="file" class="form-control" id="file" name="file" multiple accept=".png, .jpg, .jpeg">
                     </div>
                     <button type="submit" class="btn btn-primary btn-fill">Add ticket</button>
                 </form>
@@ -119,23 +119,27 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="editTicketForm" method="POST" action="{{ url_for('tickets_blueprint.edit_ticket') }}">
+            <form id="editTicketForm" method="POST" action="{{ url_for('tickets_blueprint.edit_ticket') }}" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
                 <div class="modal-body">
                     <input type="hidden" name="id" id="editTicketId">
                     <div class="form-group">
                         <label for="note">Note</label>
                         <textarea class="form-control" id="editNote" name="note" rows="10" required></textarea>
-                        
-                        <label for="ticketImage">Uploaded image</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ticketImage">Images:</label>
                         <br>
-                        <img id="ticketImage" src="" alt="Ticket Image" style="width: 100%; max-width: 800px;">
-
-                    </div> 
-                  
-                    <div id="ticketImageContainer">
+                        <img id="ticketImage" src="" alt="Ticket Image" style="width: 100%; max-width: 500px; display: none;">
                     </div>
 
+                    <div id="ticketImageContainer"></div>
+
+                    <div class="form-group">
+                        <label for="file">Replace / Add new photo</label>
+                        <input type="file" class="form-control" id="editFile" name="file" accept=".png, .jpg, .jpeg">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-fill" data-dismiss="modal">Close</button>
@@ -162,9 +166,9 @@
                     <label for="viewNote">Note</label>
                     <textarea class="form-control" id="viewNote" rows="5" readonly></textarea>
 
-                    <label for="ticketImage">Uploaded image</label>
+                    <label for="ticketImage">Images:</label>
                     <br>
-                    <img id="ticketsImage" src="" alt="Ticket Image" style="width: 100%; max-width: 800px;">
+                    <img id="ticketsImage" src="" alt="Ticket Image" style="width: 100%; max-width: 500px;">
                 </div>
 
             </div>
@@ -222,11 +226,14 @@
 
                 const ticketImageContainer = document.getElementById('ticketImageContainer');
                 const ticketImage = document.getElementById('ticketImage');
+                const editFileInput = document.getElementById('editFile');
 
                 if (imageUrl) {
                     ticketImage.src = imageUrl;
+                    ticketImage.style.display = 'block';
                     ticketImageContainer.style.display = 'block';
                 } else {
+                    ticketImage.style.display = 'none';
                     ticketImageContainer.style.display = 'none';
                 }
     
@@ -235,11 +242,13 @@
                     editNoteElement.value = note; // show content in textarea
                     saveChangesButton.disabled = true;
                     closeTicketButton.disabled = true;
+                    editFileInput.disabled = true;
                 } else {
                     editNoteElement.disabled = false; // enable textarea
                     editNoteElement.value = note; // show content in textarea
                     saveChangesButton.disabled = false;
                     closeTicketButton.disabled = false;
+                    editFileInput.disabled = false;
                 }
     
                 $('#editTicketModal').modal('show');

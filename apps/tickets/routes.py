@@ -55,6 +55,13 @@ def edit_ticket():
                 flash('It is not possible to edit a closed ticket', 'danger')
             else:
                 ticket.note = request.form['note']
+                file = request.files.get('file')
+                if file:
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                    file.save(file_path)
+                    filename = os.path.join('static/assets/img/', filename)
+                    ticket.image = filename
                 db.session.commit()
                 flash('Ticket updated successfully', 'success')
         else:
@@ -62,6 +69,7 @@ def edit_ticket():
     else:
         flash('You are not authorized to edit tickets', 'danger')
     return redirect(url_for('tickets_blueprint.tickets'))
+
 
 @blueprint.route('/close_ticket', methods=['POST'])
 @login_required

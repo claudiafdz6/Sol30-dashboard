@@ -48,6 +48,13 @@
     overflow-y: auto;
 }
 
+.modal-body #ticketImage{
+    position: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .modal-title {
     font-weight: bold;
 }
