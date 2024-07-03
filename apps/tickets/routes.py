@@ -89,7 +89,7 @@ def close_ticket():
     else:
         return jsonify(success=False, message='You are not authorized'), 403
 
-#to upload photo into the bd
+# to upload photo into DB
 @blueprint.route('/upload_photo', methods=['GET', 'POST'])
 def index():
 	if request.method == 'POST':
@@ -99,3 +99,24 @@ def index():
 		db.session.commit()
 		return f'Uploaded'
 	return render_template('index.html')
+
+# to delete the photo from DB
+@blueprint.route('/delete_photo/<int:ticket_id>', methods=['DELETE'])
+@login_required
+def delete_photo(ticket_id):
+    if current_user.is_admin:
+        ticket = TicketSupervisor.query.get(ticket_id)
+        if ticket and ticket.image:
+            # delete file system image
+            image_path = os.path.join(current_app.root_path, ticket.image)
+            if os.path.exists(image_path):
+                os.remove(image_path)
+            
+            # remove image from DB
+            ticket.image = None
+            db.session.commit()
+            return jsonify(success=True)
+        else:
+            return jsonify(success=False, message='Image not found to delete'), 404
+    else:
+        return jsonify(success=False, message='You are not authorized'), 403

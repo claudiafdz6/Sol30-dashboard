@@ -137,14 +137,15 @@
                     <div id="ticketImageContainer"></div>
 
                     <div class="form-group">
-                        <label for="file">Replace / Add new photo</label>
+                        <label for="file">Replace / Add new photo:</label>
                         <input type="file" class="form-control" id="editFile" name="file" accept=".png, .jpg, .jpeg">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-fill" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary btn-fill" id="saveChangesButton">Save changes</button>
-                    <button type="button" class="btn btn-danger btn-fill" id="closeTicketButton">Close Ticket</button>
+                    <button type="button" class="btn btn-warning btn-fill delete_photo" id="deleteImageButton">Delete image</button>
+                    <button type="button" class="btn btn-danger btn-fill" id="closeTicketButton">Close ticket</button>
                 </div>
             </form>
         </div>
@@ -207,7 +208,10 @@
 <script type="text/javascript">
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Edit ticket button
+
+        const deletePhotoButton = document.querySelectorAll('.delete_photo');
+
+        // edit ticket button
         const editTicketButton = document.querySelectorAll('.edit-ticket');
         editTicketButton.forEach(button => {
             button.addEventListener('click', function () {
@@ -243,17 +247,41 @@
                     saveChangesButton.disabled = true;
                     closeTicketButton.disabled = true;
                     editFileInput.disabled = true;
+                    deleteImageButton.disabled = true;
                 } else {
                     editNoteElement.disabled = false; // enable textarea
                     editNoteElement.value = note; // show content in textarea
                     saveChangesButton.disabled = false;
                     closeTicketButton.disabled = false;
                     editFileInput.disabled = false;
+                    deleteImageButton.disabled = false;
                 }
     
                 $('#editTicketModal').modal('show');
             });
         });
+
+        // delete photo button
+        const deleteImageButton = document.getElementById('deleteImageButton');
+        deleteImageButton.addEventListener('click', function () {
+        const ticketId = document.getElementById('editTicketId').value;
+        if (confirm('Are you sure you want to delete this photo?')) {
+            fetch(`/delete_photo/${ticketId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      document.getElementById('ticketImage').style.display = 'none';
+                      alert('Image was deleted successfully.');
+                  } else {
+                      alert(data.message || 'Error, the photo was not deleted.');
+                  }
+              });
+        }
+    });
     
         // View ticket button for non-admin users
         const viewNoteButton = document.querySelectorAll('.view-ticket');
