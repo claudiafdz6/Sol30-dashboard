@@ -20,7 +20,7 @@
                                 {% if msg %}
                                     {{ msg | safe }}
                                 {% else %}
-                                    Add your credentials
+                                    Aggiungi le tue credenziali
                                 {% endif %}
                             </p>
                         </div>
@@ -34,13 +34,13 @@
 
                                     <div class="col-md-1 px-1">
                                         <div class="form-group">
-                                            <label>Username</label>
+                                            <label>Nome utente</label>
                                         </div>
                                     </div>
 
                                     <div class="col-md-5 px-1">
                                         <div class="form-group">
-                                            {{ form.username(placeholder="Username", class="form-control") }}
+                                            {{ form.username(placeholder="Nome utente", class="form-control") }}
                                         </div>
                                     </div>
 
@@ -67,7 +67,7 @@
                                     <div class="col-md-5 pl-1">
                                         <button name="login" type="submit" class="btn btn-info btn-fill">Login</button>
 
-                                        &nbsp; &nbsp; Don't have an account? <a href="{{ url_for('authentication_blueprint.register') }}" >Register</a>
+                                        &nbsp; &nbsp;Non hai un account? <a href="{{ url_for('authentication_blueprint.register') }}" >Iscriversi</a>
                                         <div class="clearfix"></div>                                        
                                     </div>
 

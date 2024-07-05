@@ -16,25 +16,25 @@ Tip 2: you can also add an image using data-image tag
             <li class="nav-item nav-item {% if 'index' in segment %} active {% endif %}">
                 <a class="nav-link" href="/">
                     <i class="nc-icon nc-notes"></i>
-                    <p>Table</p>
+                    <p>Tabella</p>
                 </a>
             </li>
             <li class="nav-item nav-item {% if 'user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/user.html">
                     <i class="nc-icon nc-circle-09"></i>
-                    <p>User Profile</p>
+                    <p>Profilo Utente</p>
                 </a>
             </li>
             <li class="nav-item nav-item {% if 'user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/allUsers.html">
                     <i class="nc-icon nc-circle-09"></i>
-                    <p>All Users</p>
+                    <p>Tutti gli utenti</p>
                 </a>
             </li>
             <li>
                 <a class="nav-link" href="{{ url_for('authentication_blueprint.logout') }}">
                     <i class="nc-icon nc-button-power"></i>
-                    <p>Logout</p>
+                    <p>Disconnetti</p>
                 </a>
             </li>
         </ul>
@@ -45,30 +45,29 @@ Tip 2: you can also add an image using data-image tag
             <li class="nav-item nav-item {% if 'index' in segment %} active {% endif %}">
                 <a class="nav-link" href="/">
                     <i class="nc-icon nc-notes"></i>
-                    <p>Table</p>
+                    <p>Tabella</p>
                 </a>
             </li>
             <li class="nav-item nav-item {% if 'user' in segment %} active {% endif %}">
                 <a class="nav-link" href="/user.html">
                     <i class="nc-icon nc-circle-09"></i>
-                    <p>User Profile</p>
+                    <p>Profilo Utente</p>
                 </a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link active" target="_blank">
                     <i class="nc-icon nc-atom"></i>
-                    <p>Solutions 30 - Italia</p>
+                    <p>Solutions 30</p>
                 </a>
             </li>
 
-            
             {% else %}
             <!-- when the account is created with 'null' value by default -->
         
             <li class="nav-item active">
                 <a class="nav-link active" target="_blank">
                     <i class="nc-icon nc-atom"></i>
-                    <p>Solutions 30 - Italia</p>
+                    <p>Solutions 30</p>
                 </a>
             </li>
             {% endif %}
