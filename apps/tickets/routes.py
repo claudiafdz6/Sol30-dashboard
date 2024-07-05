@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_login import login_required, current_user
 from apps import db
 from apps.tickets.forms import TicketForm
@@ -8,6 +8,9 @@ from zoneinfo import ZoneInfo
 import os
 from flask import current_app
 from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename
+import json
+
 
 blueprint = Blueprint('tickets_blueprint', __name__)
 
@@ -17,21 +20,23 @@ def tickets():
     form = TicketForm()
     if request.method == 'POST':
         if current_user.is_admin:
-            file = request.files.get('file')
-            filename = None
-            if file:
-                filename = secure_filename(file.filename)
-                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-                file.save(file_path)
-                filename = os.path.join('static/assets/img/', filename)
-                
+            files = request.files.getlist('file')
+            filenames = []
+            if files:
+                for file in files:
+                    if file:
+                        filename = secure_filename(file.filename)
+                        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                        file.save(file_path)
+                        filenames.append(os.path.join('static/assets/img/', filename))
+
             new_ticket = TicketSupervisor(
                 utente_apertura=current_user.username,
                 utente_segnalato=form.utente_segnalato.data,
                 id_task=form.id_task.data,
                 note=form.note.data,
                 tag=form.tag.data,
-                image=filename  # save the image path to the database
+                image=filenames if filenames else None  # save image paths as JSON array
             )
             db.session.add(new_ticket)
             db.session.commit()
@@ -42,7 +47,6 @@ def tickets():
     
     tickets = TicketSupervisor.query.all()
     return render_template('home/index.html', tickets=tickets, form=form)
-
 
 @blueprint.route('/edit_ticket', methods=['POST'])
 @login_required
@@ -55,13 +59,16 @@ def edit_ticket():
                 flash('It is not possible to edit a closed ticket', 'danger')
             else:
                 ticket.note = request.form['note']
-                file = request.files.get('file')
-                if file:
-                    filename = secure_filename(file.filename)
-                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-                    file.save(file_path)
-                    filename = os.path.join('static/assets/img/', filename)
-                    ticket.image = filename
+                files = request.files.getlist('file')
+                filenames = ticket.image if ticket.image else []
+                if files:
+                    for file in files:
+                        if file:
+                            filename = secure_filename(file.filename)
+                            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                            file.save(file_path)
+                            filenames.append(os.path.join('static/assets/img/', filename))
+                    ticket.image = filenames
                 db.session.commit()
                 flash('Ticket updated successfully', 'success')
         else:

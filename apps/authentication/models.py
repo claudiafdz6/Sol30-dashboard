@@ -10,6 +10,7 @@ from datetime import datetime
 
 from zoneinfo import ZoneInfo
 
+from sqlalchemy.dialects.postgresql import JSON
 
 class Users(db.Model, UserMixin):
 
@@ -19,7 +20,7 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(64), unique=True)
     password = db.Column(db.LargeBinary)
-    #by default, all news accounts will have 'null' value and later will be assigned whether they are 'user' or 'admin'
+    # by default, all news accounts will have 'null' value and later will be assigned whether they are 'user' or 'admin'
     is_admin = db.Column(db.Boolean, nullable=True)
 
     def __init__(self, **kwargs):
@@ -43,8 +44,7 @@ class Users(db.Model, UserMixin):
 
 class TicketSupervisor(db.Model, UserMixin):
 
-    __tablename__ = 'TicketSupervisor'
-
+    __tablename__ = 'ticket_supervisor'
     id = db.Column(db.Integer, primary_key=True)
     utente_apertura = db.Column(db.String(64), nullable=False)
     utente_segnalato = db.Column(db.String(64), nullable=False)
@@ -52,24 +52,27 @@ class TicketSupervisor(db.Model, UserMixin):
     note = db.Column(db.Text, nullable=True)
     tag = db.Column(db.String(64), nullable=True)
     data_apertura = db.Column(db.DateTime, default=lambda: datetime.now(ZoneInfo('Europe/Rome')))
-    data_chiusura = db.Column(db.DateTime, nullable=True) #by default the value is null
-    image = db.Column(db.String(256), nullable=True) 
+    data_chiusura = db.Column(db.DateTime, nullable=True) # by default the value is null
+    # image = db.Column(db.String(256), nullable=True) 
+    image = db.Column(JSON, nullable=True)  # store images as JSON array into database
     
     def __repr__(self):
         return f'<TicketSupervisor {self.id_task}>'
     
-    #in order to see the date and time correctly in DD-MM-YYYY & H:M format, it's necessary to format the data using .strftime() method 
+    # in order to see the date and time correctly in DD-MM-YYYY & H:M format, it's necessary to format the data using .strftime() method 
     def formatted_data_apertura(self):
         return self.data_apertura.strftime('%d/%m/%Y, %H:%M')
     
     def formatted_data_chiusura(self):
         return self.data_chiusura.strftime('%d/%m/%Y, %H:%M') if self.data_chiusura else 'None'
-
-
+    
+    # in order to be able to show the images using the routes, it's necessary to format the data and remove the square brackets
+    def formatted_image(self):
+        return self.image.replace('[', '').replace(']', '') if self.image else 'None'
+    
 @login_manager.user_loader
 def user_loader(id):
     return Users.query.filter_by(id=id).first()
-
 
 @login_manager.request_loader
 def request_loader(request):

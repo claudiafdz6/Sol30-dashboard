@@ -39,11 +39,11 @@
                                     <td>
                                         <!-- The magnifying glass icon is shown whenever if "data_chiusura" is "None" or has been closed -->
                                         {% if current_user.is_admin %}
-                                        <button class="transparent-button edit-ticket" data-id="{{ ticket.id }}" data-note="{{ ticket.note }}" data-chiusura="{{ ticket.data_chiusura }}" data-image-url="{{ ticket.image }}">
+                                        <button class="transparent-button edit-ticket" data-id="{{ ticket.id }}" data-note="{{ ticket.note }}" data-chiusura="{{ ticket.data_chiusura }}" data-images-url="{{ ticket.image | tojson }}">
                                             <i class="fa fa-search"></i>
                                         </button>
                                         {% else %}
-                                        <button class="transparent-button view-ticket" data-note="{{ ticket.note }}" data-image-url="{{ ticket.image }}">
+                                        <button class="transparent-button view-ticket" data-note="{{ ticket.note }}" data-images-url="{{ ticket.image | tojson }}">
                                             <i class="fa fa-search"></i>
                                         </button>
                                         {% endif %}
@@ -131,7 +131,9 @@
                     <div class="form-group">
                         <label for="ticketImage">Images:</label>
                         <br>
-                        <img id="ticketImage" src="" alt="Ticket Image" style="width: 100%; max-width: 500px; display: none;">
+                        {% for ticket in tickets %}
+                        <img id="ticketImage" src="{{ ticket.formatted_image }}" alt="Ticket Image" style="width: 100%; max-width: 500px; display: none;">
+                        {% endfor %}
                     </div>
 
                     <div id="ticketImageContainer"></div>
@@ -166,10 +168,11 @@
                 <div class="form-group">
                     <label for="viewNote">Note</label>
                     <textarea class="form-control" id="viewNote" rows="5" readonly></textarea>
-
-                    <label for="ticketImage">Images:</label>
-                    <br>
-                    <img id="ticketsImage" src="" alt="Ticket Image" style="width: 100%; max-width: 500px;">
+                        <label for="ticketImage">Images:</label>
+                        <br>
+                        {% for ticket in tickets %}
+                        <img id="ticketsImage" src="{{ ticket.formatted_image }}" alt="Ticket image" style="width: 100%; max-width: 500px;">
+                        {% endfor %}
                 </div>
 
             </div>
@@ -215,10 +218,10 @@
         const editTicketButton = document.querySelectorAll('.edit-ticket');
         editTicketButton.forEach(button => {
             button.addEventListener('click', function () {
-                const ticketId = this.getAttribute('data-id');
-                const note = this.getAttribute('data-note');
+                const ticketId = this.dataset.id;
+                const note = this.dataset.note;
                 const chiusura = this.getAttribute('data-chiusura') !== 'None';
-                const imageUrl = this.getAttribute('data-image-url');
+                const imageUrl = this.getAttribute('data-images-url');
     
                 document.getElementById('editTicketId').value = ticketId;
     
@@ -231,7 +234,7 @@
                 const ticketImageContainer = document.getElementById('ticketImageContainer');
                 const ticketImage = document.getElementById('ticketImage');
                 const editFileInput = document.getElementById('editFile');
-
+                
                 if (imageUrl) {
                     ticketImage.src = imageUrl;
                     ticketImage.style.display = 'block';
@@ -292,7 +295,7 @@
                 const viewNoteElement = document.getElementById('viewNote');
                 viewNoteElement.value = note;
 
-                const imageUrl = this.getAttribute('data-image-url');
+                const imageUrl = this.getAttribute('data-images-url');
     
                 const ticketImageElement = document.getElementById('ticketsImage');
                 if (imageUrl) {
