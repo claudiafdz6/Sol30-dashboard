@@ -36,7 +36,7 @@ def tickets():
                 id_task=form.id_task.data,
                 note=form.note.data,
                 tag=form.tag.data,
-                image=filenames if filenames else None  # save image paths as JSON array
+                image=filenames if filenames else []  # save image paths as JSON array
             )
             db.session.add(new_ticket)
             db.session.commit()
@@ -60,7 +60,13 @@ def edit_ticket():
             else:
                 ticket.note = request.form['note']
                 files = request.files.getlist('file')
-                filenames = ticket.image if ticket.image else []
+
+                if isinstance(ticket.image, str):
+
+                    filenames = json.loads(ticket.image)
+                else:
+                    filenames = ticket.image if ticket.image else []
+ 
                 if files:
                     for file in files:
                         if file:
@@ -68,7 +74,11 @@ def edit_ticket():
                             file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
                             file.save(file_path)
                             filenames.append(os.path.join('static/assets/img/', filename))
+                if len(filenames) > 1:
+                    ticket.image = json.dumps(filenames)
+                else:
                     ticket.image = filenames
+
                 db.session.commit()
                 flash('Ticket updated successfully', 'success')
         else:
@@ -115,12 +125,17 @@ def delete_photo(ticket_id):
         ticket = TicketSupervisor.query.get(ticket_id)
         if ticket and ticket.image:
             # delete file system image
-            image_path = os.path.join(current_app.root_path, ticket.image)
+            #image_path = os.path.join(current_app.root_path, ticket.image)
+            ticket_image_dict = ticket.image
+            ticket_image_string = json.dumps(ticket_image_dict)
+
+            image_path = os.path.join(current_app.root_path, ticket_image_string)
+
             if os.path.exists(image_path):
                 os.remove(image_path)
             
             # remove image from DB
-            ticket.image = None
+            ticket.image = []
             db.session.commit()
             return jsonify(success=True)
         else:
