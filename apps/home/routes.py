@@ -29,7 +29,8 @@ def index():
             note=form.note.data,
             tag=form.tag.data,
             data_apertura=form.data_apertura.data,
-            data_chiusura=form.data_chiusura.data
+            data_chiusura=form.data_chiusura.data,
+            image=form.image
         )
         db.session.add(new_ticket)
         db.session.commit()

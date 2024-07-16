@@ -46,15 +46,15 @@ class TicketSupervisor(db.Model, UserMixin):
 
     __tablename__ = 'ticket_supervisor'
     id = db.Column(db.Integer, primary_key=True)
-    utente_apertura = db.Column(db.String(64), nullable=False)
-    utente_segnalato = db.Column(db.String(64), nullable=False)
+    utente_apertura = db.Column(db.String(100), nullable=False)
+    utente_segnalato = db.Column(db.String(100), nullable=False)
     id_task = db.Column(db.String(64), nullable=False)
     note = db.Column(db.Text, nullable=True)
-    tag = db.Column(db.String(64), nullable=True)
+    tag = db.Column(db.String(300), nullable=True)
     data_apertura = db.Column(db.DateTime, default=lambda: datetime.now(ZoneInfo('Europe/Rome')))
     data_chiusura = db.Column(db.DateTime, nullable=True) # by default the value is null
     # image = db.Column(db.String(256), nullable=True) 
-    image = db.Column(JSON, nullable=True)  # store images as JSON array into database
+    image = db.Column(db.JSON, nullable=True)  # store images as JSON array into database
     
     def __repr__(self):
         return f'<TicketSupervisor {self.id_task}>'

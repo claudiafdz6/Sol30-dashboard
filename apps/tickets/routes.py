@@ -10,6 +10,7 @@ from flask import current_app
 from werkzeug.utils import secure_filename
 from werkzeug.utils import secure_filename
 import json
+import uuid
 
 
 blueprint = Blueprint('tickets_blueprint', __name__)
@@ -26,9 +27,10 @@ def tickets():
                 for file in files:
                     if file:
                         filename = secure_filename(file.filename)
-                        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                        unique_filename = generate_unique_filename(filename)
+                        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_filename)
                         file.save(file_path)
-                        filenames.append(os.path.join('static/assets/img/', filename))
+                        filenames.append(os.path.join('static/assets/img/', unique_filename))
 
             new_ticket = TicketSupervisor(
                 utente_apertura=current_user.username,
@@ -58,11 +60,14 @@ def edit_ticket():
             if ticket.data_chiusura:
                 flash('It is not possible to edit a closed ticket', 'danger')
             else:
+                ticket.utente_segnalato = request.form['utente_segnalato']
+                ticket.id_task = request.form['id_task']
+                ticket.tag = request.form['tag']
                 ticket.note = request.form['note']
+                
                 files = request.files.getlist('file')
 
                 if isinstance(ticket.image, str):
-
                     filenames = json.loads(ticket.image)
                 else:
                     filenames = ticket.image if ticket.image else []
@@ -71,9 +76,10 @@ def edit_ticket():
                     for file in files:
                         if file:
                             filename = secure_filename(file.filename)
-                            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                            unique_filename = generate_unique_filename(filename)
+                            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_filename)
                             file.save(file_path)
-                            filenames.append(os.path.join('static/assets/img/', filename))
+                            filenames.append(os.path.join('static/assets/img/', unique_filename))
                 if len(filenames) > 1:
                     ticket.image = json.dumps(filenames)
                 else:
@@ -86,6 +92,7 @@ def edit_ticket():
     else:
         flash('You are not authorized to edit tickets', 'danger')
     return redirect(url_for('tickets_blueprint.tickets'))
+
 
 
 @blueprint.route('/close_ticket', methods=['POST'])
@@ -142,3 +149,10 @@ def delete_photo(ticket_id):
             return jsonify(success=False, message='Image not found to delete'), 404
     else:
         return jsonify(success=False, message='You are not authorized'), 403
+    
+
+def generate_unique_filename(filename):
+    unique_id = uuid.uuid4().hex
+    name, ext = os.path.splitext(filename)
+    return f"{name}_{unique_id}{ext}"
+

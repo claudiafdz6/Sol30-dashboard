@@ -11,6 +11,7 @@
 .table thead tr th {
     color: black;
     font-weight: bold;
+    margin:2em;
 }
 
 .table tbody td {
@@ -85,3 +86,40 @@ textarea {
 
 /****** Dropzone JS file upload *****/
 
+.dropzone {
+    width: 98%;
+    margin: 1%;
+    border: 2px dashed #3498db !important;
+    border-radius: 5px;
+    transition: .2s; 
+}
+
+/****** Tagify (tags) *******/
+
+#tags-outside {
+    border: 0;
+    width: 100%;
+    max-width: 700px;
+    height: 50px;
+}
+
+.tagify--outside {
+    border: 0;
+}
+
+.tagify--outside .tagify__input {
+    order: -1;
+    flex: 100%;
+    border: 1px solid var(--tags-border-color);
+    margin-bottom: 1em;
+    transition: .1s;
+}
+
+.tagify--outside .tagify__input:hover {
+    border-color: var(--tags-hover-border-color);
+}
+
+.tagify--outside.tagify--focus .tagify__input {
+    transition: 0s;
+    border-color: var(--tags-focus-border-color);
+}

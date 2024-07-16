@@ -2,8 +2,24 @@
 
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/indexStyle.css') }}">
+
+<!-- dropzone -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
+<!-- tagify -->
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+<link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+<!-- datatables -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+
+<!-- https://cdn.datatables.net/searchpanes/2.3.1/js/dataTables.searchPanes.js
+https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
+
+<link href="https://cdn.datatables.net/1.10.5/css/jquery.dataTables.css">
+<script src="https://ccdn.datatables.net/1.10.5/js/jquery.dataTables.js"></script>
+
+
 {% endblock stylesheets %}
 
 {% block title %} Tickets {% endblock %}
@@ -24,7 +40,7 @@
 
                     </div>
                     <div class="card-body table-full-width table-responsive">
-                        <table class="table table-hover table-striped">
+                        <table id="ticketsTable"class="table table-hover table-striped" style="float:left;margin-right:20px;" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -100,13 +116,28 @@
                     </div>
                     <div class="form-group">
                         {{ form.tag.label }} 
-                        {{ form.tag(class_='form-control') }}
+                        <!-- {{ form.tag(class_='form-control') }} -->
+
+                        <!-- <input name='tags-outside' class='tagify--outside' value='tag1, tag2, tag3, tag4' placeholder='scrivi i tag da aggiungere di seguito'> -->
+
+                        <!-- {{ form.tag(class_='form-control') }} -->
+                        <!-- Campo de entrada Tagify -->
+                        <input id="tags-outside" name="{{ form.tag.name }}" class="tagify--outside" value="tag1, tag2, tag3, tag4" placeholder="scrivi i tag da aggiungere di seguito" autofocus>
+
                     </div>
                     <!-- image filed added to be able to upload a photo-->
-                    <div class="form-group">
+
+                    <!-- <div class="form-group">
                         <label for="filee">Carica una foto &#40;.jpg, .jpeg, .png&#41;</label>
-                        <input type="file" class="form-control" id="file" name="file" multiple accept=".png, .jpg, .jpeg">
+                        <input type="file" class="dropzone" id="file" name="file" multiple accept=".png, .jpg, .jpeg">
+                    </div> -->
+
+                    <div class="form-group">
+                        <label for="file">Aggiungi una nuova foto:</label>
+                        <!-- <input type="file" class="form-control" id="editFile" name="file" accept=".png, .jpg, .jpeg"> -->
+                        <div id="editFile" class="dropzone">Rilascia le tue immagini per caricarle</div>
                     </div>
+
                     <button type="submit" class="btn btn-primary btn-fill">Aggiungi ticket</button>
                 </form>
             </div>
@@ -128,25 +159,50 @@
                 {{ form.hidden_tag() }}
                 <div class="modal-body">
                     <input type="hidden" name="id" id="editTicketId">
+                    
+                    <div class="form-group">
+                        {{ form.utente_segnalato.label }}
+                        {{ form.utente_segnalato(class_='form-control') }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.id_task.label }}
+                        {{ form.id_task(class_='form-control') }}
+                    </div>
+
                     <div class="form-group">
                         <label for="note">Note</label>
                         <textarea class="form-control" id="editNote" name="note" rows="10" required></textarea>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="ticketImage">Foto:</label>
-                        <br>
-                        {% for ticket in tickets %}
-                        <img id="ticketImage" src="{{ ticket.formatted_image }}" alt="Ticket Image" style="width: 100%; max-width: 500px; display: none;">
-                        {% endfor %}
+                        {{ form.tag.label }} 
+                        {{ form.tag(class_='form-control') }}
+                        <!-- <input id="tags-outside" name="{{ form.tag.name }}" class="tagify--outside" value="tag1, tag2, tag3, tag4" placeholder="scrivi i tag da aggiungere di seguito"> -->
                     </div>
+
+                    <!-- conditional if image exists or not-->
+
+                    <div class="form-group">
+                        {% if form.image.value != [] %}
+                            <!-- If there are images, display the label and images -->
+                            <label for="ticketImage">Foto:</label>
+                            <br>
+                            {% for image_url in form.image.value %}
+                                <img id="ticketImage" src="{{ image_url }}" alt="Ticket Image" style="width: 100%; max-width: 300px;">
+                            {% endfor %}
+                        {% else %}
+                        <label for="ticketImage"></label>
+                        {% endif %}
+                    </div>
+                                        
 
                     <div id="ticketImageContainer"></div>
 
                     <div class="form-group">
                         <label for="file">Aggiungi una nuova foto:</label>
                         <!-- <input type="file" class="form-control" id="editFile" name="file" accept=".png, .jpg, .jpeg"> -->
-                        <div id="editFile" class="dropzone"></div>
+                        <div id="editFile" class="dropzone">Rilascia le tue immagini per caricarle</div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -177,7 +233,7 @@
                         <label for="ticketImage">Foto:</label>
                         <br>
                         {% for ticket in tickets %}
-                        <img id="ticketsImage" src="{{ ticket.formatted_image }}" alt="Ticket image" style="width: 100%; max-width: 500px;">
+                        <img id="ticketsImage" src="{{ ticket.formatted_image }}" alt="Ticket image" style="width: 100%; max-width: 300px; display: none;">
                         {% endfor %}
                 </div>
 
@@ -216,6 +272,10 @@
 {% block javascripts %}
 <script type="text/javascript">
 
+    $(document).ready(function () {
+        $('#ticketsTable').DataTable();
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
 
         const deletePhotoButton = document.querySelectorAll('.delete_photo');
@@ -250,6 +310,9 @@
                         const imgElement = document.createElement('img');
                         imgElement.src = imageUrl;
                         imgElement.style.display = 'block';
+                        imgElement.alt = 'Ticket Image';
+                        imgElement.style.width = '100%';
+                        imgElement.style.maxWidth = '300px';
                         imgElement.style.marginBottom = '10px';
                         ticketImageContainer.appendChild(imgElement);
                     });
@@ -351,7 +414,57 @@
             });
         });
 
+        var input = document.querySelector('input[name=tags-outside]')
+
+
+        // tags with tagify 
+        var input = document.querySelector('#tags-outside');
+        var tagify = new Tagify(input, {
+            whitelist: ['NO_COMPLIANT_TECNICO', 'NO_COMPLIANT_NO_CHECK_VOCE', 'NO_COMPLIANT_NO_CHECK_DATI', 'NO_COMPLIANT_ERR_APERTURA', 'NO_COMPLIANT_NO_MITIGATION', 'NO_COMPLIANT_NO_CHECK_TASK', 'NO_COMPLIANT_ALTRO', 'NO_COMPLIANT_RAPPORTO_CLIENTE', 'NO_COMPLIANT_ERR_AUBAY', 'NO_COMPLIANT_NO_CARING', 'NO_COMPLIANT_NO_ACCOUNTABILITY', 'OK_COMPLIANT', 'COMPLIANT'],
+            dropdown: {
+                enabled: 0, // always opens dropdown when input gets focus
+                maxItems: 15, // maximum number of allowed tags
+                closeOnSelect: false, // keep the dropdown open after selecting a suggestion
+                userInput: true, // allow manually typing/pasting/editing tags (tags may only be added from the whitelist)
+                autoComplete: true // tries to suggest the input's value while typing (match from whitelist) by adding the rest of term as grayed-out text
+            }
+        });
+
+        // handle form submission to ensure Tagify data is updated
+        document.querySelector('form').addEventListener('submit', function (e) {
+            // get the tag values ​​and assign them to the original form field
+            var tagValues = tagify.value.map(tag => tag.value).join(',');
+            document.querySelector('input[name={{ form.tag.name }}]').value = tagValues;
+        });
+
+        // Dropzone configuration
+        var myDropzone = new Dropzone("#editFile", {
+            url: "{{ url_for('tickets_blueprint.edit_ticket') }}",
+            paramName: "file",
+            maxFilesize: 5,
+            acceptedFiles: ".png,.jpg,.jpeg",
+            dictDefaultMessage: "Rilascia le tue immagini per caricarle",
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 10,
+            init: function() {
+                const myDropzone = this;
+                document.getElementById('saveChangesButton').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (myDropzone.getQueuedFiles().length > 0) {
+                        myDropzone.processQueue();
+                    } else {
+                        document.getElementById('editTicketForm').submit();
+                    }
+                });
+                this.on("successmultiple", function(files, response) {
+                    document.getElementById('editTicketForm').submit();
+                });
+            }
+        });
         
+
     });
 </script>
 {% endblock %}
