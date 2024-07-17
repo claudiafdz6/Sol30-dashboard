@@ -60,7 +60,7 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
                                     <td>
                                         <!-- The magnifying glass icon is shown whenever if "data_chiusura" is "None" or has been closed -->
                                         {% if current_user.is_admin %}
-                                        <button class="transparent-button edit-ticket" data-id="{{ ticket.id }}" data-note="{{ ticket.note }}" data-chiusura="{{ ticket.data_chiusura }}" data-images-url="{{ ticket.image }}">
+                                            <button class="transparent-button edit-ticket" data-id="{{ ticket.id }}" data-note="{{ ticket.note }}" data-chiusura="{{ ticket.data_chiusura }}" data-images-url="{{ ticket.image }}" data-utente-segnalato="{{ ticket.utente_segnalato }}" data-id-task="{{ ticket.id_task }}" data-tag="{{ ticket.tag }}">
                                             <i class="fa fa-search"></i>
                                         </button>
                                         {% else %}
@@ -116,13 +116,8 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
                     </div>
                     <div class="form-group">
                         {{ form.tag.label }} 
-                        <!-- {{ form.tag(class_='form-control') }} -->
-
-                        <!-- <input name='tags-outside' class='tagify--outside' value='tag1, tag2, tag3, tag4' placeholder='scrivi i tag da aggiungere di seguito'> -->
-
-                        <!-- {{ form.tag(class_='form-control') }} -->
-                        <!-- Campo de entrada Tagify -->
-                        <input id="tags-outside" name="{{ form.tag.name }}" class="tagify--outside" value="tag1, tag2, tag3, tag4" placeholder="scrivi i tag da aggiungere di seguito" autofocus>
+                        <!-- tagify -->
+                        <input id="tags-outside" name="{{ form.tag.name }}" class="tagify--outside" value="" placeholder="scrivi i tag da aggiungere di seguito">
 
                     </div>
                     <!-- image filed added to be able to upload a photo-->
@@ -133,7 +128,7 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
                     </div> -->
 
                     <div class="form-group">
-                        <label for="file">Aggiungi una nuova foto:</label>
+                        <label for="file">Aggiungi una nuova foto &#40;.jpg, .jpeg, .png&#41;:</label>
                         <!-- <input type="file" class="form-control" id="editFile" name="file" accept=".png, .jpg, .jpeg"> -->
                         <div id="editFile" class="dropzone">Rilascia le tue immagini per caricarle</div>
                     </div>
@@ -162,12 +157,12 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
                     
                     <div class="form-group">
                         {{ form.utente_segnalato.label }}
-                        {{ form.utente_segnalato(class_='form-control') }}
+                        {{ form.utente_segnalato(class_='form-control', id='form_utente_segnalato') }}
                     </div>
 
                     <div class="form-group">
                         {{ form.id_task.label }}
-                        {{ form.id_task(class_='form-control') }}
+                        {{ form.id_task(class_='form-control', id='form_id_task') }}
                     </div>
 
                     <div class="form-group">
@@ -177,8 +172,9 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
 
                     <div class="form-group">
                         {{ form.tag.label }} 
-                        {{ form.tag(class_='form-control') }}
+                        <!-- {{ form.tag(class_='form-control') }}-->
                         <!-- <input id="tags-outside" name="{{ form.tag.name }}" class="tagify--outside" value="tag1, tag2, tag3, tag4" placeholder="scrivi i tag da aggiungere di seguito"> -->
+                        <input id="editTags" name="{{ form.tag.name }}" class="tagify--outside" value="" placeholder="scrivi i tag da aggiungere di seguito">
                     </div>
 
                     <!-- conditional if image exists or not-->
@@ -200,7 +196,7 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
                     <div id="ticketImageContainer"></div>
 
                     <div class="form-group">
-                        <label for="file">Aggiungi una nuova foto:</label>
+                        <label for="file">Aggiungi una nuova foto &#40;.jpg, .jpeg, .png&#41;:</label>
                         <!-- <input type="file" class="form-control" id="editFile" name="file" accept=".png, .jpg, .jpeg"> -->
                         <div id="editFile" class="dropzone">Rilascia le tue immagini per caricarle</div>
                     </div>
@@ -272,6 +268,16 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
 {% block javascripts %}
 <script type="text/javascript">
 
+<script src="{{ url_for('static', filename='assets/js/index.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+<script>
+
+
     $(document).ready(function () {
         $('#ticketsTable').DataTable();
     });
@@ -289,21 +295,18 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
                 const chiusura = this.getAttribute('data-chiusura') !== 'None';
                 const imageUrl = this.getAttribute('data-images-url');
                 const images = JSON.parse(this.dataset.imagesUrl.replace(/'/g, '"'));
+                const utenteSegnalato = this.dataset.utenteSegnalato;
+                const idTask = this.dataset.idTask;
+                const tag = this.dataset.tag;
     
                 document.getElementById('editTicketId').value = ticketId;
+                document.getElementById('editNote').value = note;
+                document.getElementById('form_utente_segnalato').value = utenteSegnalato;
+                document.getElementById('form_id_task').value = idTask;
+                document.getElementById('tags-outside').value = tag;
     
-                const editNoteElement = document.getElementById('editNote');
-                const saveChangesButton = document.getElementById('saveChangesButton');
-                const closeTicketButton = document.getElementById('closeTicketButton');
-    
-                editNoteElement.value = note;
-
+                // image mapping
                 const ticketImageContainer = document.getElementById('ticketImageContainer');
-                const ticketImage = document.getElementById('ticketImage');
-                const editFileInput = document.getElementById('editFile');
-
-         
-                
                 ticketImageContainer.innerHTML = '';
                 if (images && images.length > 0) {
                     images.forEach(imageUrl => {
@@ -321,17 +324,34 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
                     ticketImageContainer.style.display = 'none';
                 }
     
+                // enable or disable ticket status elements'
+                const editUtenteSegnalatoElement = document.getElementById('form_utente_segnalato');
+                const editIdTaskElement = document.getElementById('form_id_task');
+                const editNoteElement = document.getElementById('editNote');
+                const editTagsElement = document.getElementById('tags-outside');
+                
+                const saveChangesButton = document.getElementById('saveChangesButton');
+                const closeTicketButton = document.getElementById('closeTicketButton');
+                const editFileInput = document.getElementById('editFile');
+                const deleteImageButton = document.getElementById('deleteImageButton');
+    
                 if (chiusura) {
+                    editUtenteSegnalatoElement.disabled = true; // unenable textarea
+                    editIdTaskElement.disabled = true; // unenable textarea
                     editNoteElement.disabled = true; // unenable textarea
-                    editNoteElement.value = note; // show content in textarea
-                    saveChangesButton.disabled = true;
+                    editTagsElement.disabled = true; // unenable textarea
+
+                    saveChangesButton.disabled = true; // show content in textarea
                     closeTicketButton.disabled = true;
                     editFileInput.disabled = true;
                     deleteImageButton.disabled = true;
                 } else {
+                    editUtenteSegnalatoElement.disabled = false; // unenable textarea
+                    editIdTaskElement.disabled = false; // unenable textarea
                     editNoteElement.disabled = false; // enable textarea
-                    editNoteElement.value = note; // show content in textarea
-                    saveChangesButton.disabled = false;
+                    editTagsElement.disabled = false; // unenable textarea
+
+                    saveChangesButton.disabled = false; // show content in textarea
                     closeTicketButton.disabled = false;
                     editFileInput.disabled = false;
                     deleteImageButton.disabled = false;
@@ -363,7 +383,7 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
         }
     });
     
-        // View ticket button for non-admin users
+        // view ticket button for non-admin users
         const viewNoteButton = document.querySelectorAll('.view-ticket');
         viewNoteButton.forEach(button => {
             button.addEventListener('click', function () {
@@ -386,7 +406,7 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
             });
         });
 
-        // Close ticket button
+        // close ticket button
         document.getElementById('closeTicketButton').addEventListener('click', function () {
             const ticketId = document.getElementById('editTicketId').value;
             document.getElementById('confirmCloseTicketId').value = ticketId;
@@ -394,7 +414,7 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
             $('#confirmCloseTicketModal').modal('show');
         });
 
-        // Confirm close ticket button
+        // confirm close ticket button
         document.getElementById('confirmCloseTicketButton').addEventListener('click', function () {
             const ticketId = document.getElementById('confirmCloseTicketId').value;
             fetch('{{ url_for("tickets_blueprint.close_ticket") }}', {
@@ -419,6 +439,7 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
 
         // tags with tagify 
         var input = document.querySelector('#tags-outside');
+        new Tagify(document.querySelector('#editTags'));
         var tagify = new Tagify(input, {
             whitelist: ['NO_COMPLIANT_TECNICO', 'NO_COMPLIANT_NO_CHECK_VOCE', 'NO_COMPLIANT_NO_CHECK_DATI', 'NO_COMPLIANT_ERR_APERTURA', 'NO_COMPLIANT_NO_MITIGATION', 'NO_COMPLIANT_NO_CHECK_TASK', 'NO_COMPLIANT_ALTRO', 'NO_COMPLIANT_RAPPORTO_CLIENTE', 'NO_COMPLIANT_ERR_AUBAY', 'NO_COMPLIANT_NO_CARING', 'NO_COMPLIANT_NO_ACCOUNTABILITY', 'OK_COMPLIANT', 'COMPLIANT'],
             dropdown: {
@@ -430,10 +451,10 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
             }
         });
 
-        // handle form submission to ensure Tagify data is updated
+        // handle form submission to ensure tagify data is updated and formatted
         document.querySelector('form').addEventListener('submit', function (e) {
             // get the tag values ​​and assign them to the original form field
-            var tagValues = tagify.value.map(tag => tag.value).join(',');
+            var tagValues = tagify.value.map(tag => tag.value).join(', ');
             document.querySelector('input[name={{ form.tag.name }}]').value = tagValues;
         });
 
@@ -463,7 +484,6 @@ https://cdn.datatables.net/searchpanes/2.3.1/js/searchPanes.dataTables.js -->
                 });
             }
         });
-        
 
     });
 </script>

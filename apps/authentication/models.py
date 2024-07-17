@@ -50,7 +50,7 @@ class TicketSupervisor(db.Model, UserMixin):
     utente_segnalato = db.Column(db.String(100), nullable=False)
     id_task = db.Column(db.String(64), nullable=False)
     note = db.Column(db.Text, nullable=True)
-    tag = db.Column(db.String(300), nullable=True)
+    tag = db.Column(db.String(150), nullable=True)
     data_apertura = db.Column(db.DateTime, default=lambda: datetime.now(ZoneInfo('Europe/Rome')))
     data_chiusura = db.Column(db.DateTime, nullable=True) # by default the value is null
     # image = db.Column(db.String(256), nullable=True) 
