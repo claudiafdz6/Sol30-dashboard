@@ -122,13 +122,13 @@
                         <input type="file" class="dropzone" id="file" name="file" multiple accept=".png, .jpg, .jpeg">
                     </div> -->
 
-                    <div class="form-group">
+                    <div class="form-group dropzone" id="addTicketForm" class="dropzone">
                         <label for="file">Aggiungi una nuova foto &#40;.jpg, .jpeg, .png&#41;:</label>
                         <!-- <input type="file" class="form-control" id="editFile" name="file" accept=".png, .jpg, .jpeg"> -->
                         <div id="editFile" class="dropzone">Rilascia le tue immagini per caricarle</div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-fill">Aggiungi ticket</button>
+                    <button type="submit" class="btn btn-primary btn-fill" id="addTicketButton"> Aggiungi ticket</button>
                 </form>
             </div>
         </div>
@@ -468,6 +468,7 @@
             paramName: "file",
             maxFilesize: 5,
             acceptedFiles: ".png,.jpg,.jpeg",
+            filesizeBase: 1000,
             dictDefaultMessage: "Rilascia le tue immagini per caricarle",
             autoProcessQueue: false,
             uploadMultiple: true,
