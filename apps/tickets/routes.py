@@ -11,6 +11,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.utils import secure_filename
 import json
 import uuid
+import sqlite3
 
 
 blueprint = Blueprint('tickets_blueprint', __name__)
@@ -156,3 +157,18 @@ def generate_unique_filename(filename):
     name, ext = os.path.splitext(filename)
     return f"{name}_{unique_id}{ext}"
 
+
+## autocomplete utente segnalato
+def get_db_connection():
+    conn = sqlite3.connect('ticket_supervisor.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@blueprint.route('/autocomplete_user', methods=['GET'])
+def autocomplete_user():
+    query = request.args.get('query')
+    conn = get_db_connection()
+    users = conn.execute("SELECT utente_segnalato FROM ticket_supervisor WHERE utente_segnalato LIKE ?", ('%' + query + '%',)).fetchall()
+    conn.close()
+    user_list = [user['utente_segnalato'] for user in users]
+    return jsonify(user_list)

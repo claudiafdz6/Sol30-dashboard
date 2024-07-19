@@ -4,8 +4,8 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/indexStyle.css') }}">
 
 <!-- dropzone -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
 <!-- tagify -->
 <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
@@ -13,6 +13,11 @@
 <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" rel="stylesheet">
 
+<!--boostrap autocomplete -->
+<script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.min.js"></script>
+
+<!-- Bootstrap Select CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
 
 
 {% endblock stylesheets %}
@@ -28,6 +33,8 @@
                     <div class="card-header ">
                         {% if current_user.is_authenticated and current_user.is_admin %}
                         <h4 class="card-title">Dettagli dei ticket dell'admin</h4>
+                        <br>
+                        <br>
                         <button type="button" class="btn btn-info btn-fill pull-right" data-toggle="modal" data-target="#addTicketModal">Aggiungi ticket</button>
                         {% else %}
                         <h4 class="card-title">Dettagli dei ticket dell'user</h4>
@@ -99,7 +106,9 @@
                     {{ form.hidden_tag() }}
                     <div class="form-group">
                         {{ form.utente_segnalato.label }} 
-                        {{ form.utente_segnalato(class_='form-control') }}
+                        <!-- {{ form.utente_segnalato(class_='form-control') }} -->
+                        <input type="text" id="utente_segnalato" class="form-control" name="utente_segnalato" autocomplete="on">
+
                     </div>
                     <div class="form-group">
                         {{ form.id_task.label }}
@@ -286,6 +295,24 @@
         });
     });
 
+    // autocomplete for utente_segnalato
+        $('#utente_segnalato').on('input', function() {
+            const query = $(this).val();
+            if (query.length > 2) {
+                $.ajax({
+                    url: "{{ url_for('tickets_blueprint.autocomplete_user') }}",
+                    type: "GET",
+                    data: { query: query },
+                    success: function(data) {
+                        $('#utente_segnalato').autocomplete({
+                            source: data,
+                            minLength: 2
+                        });
+                    }
+                });
+            }
+        });
+
     document.addEventListener('DOMContentLoaded', function () {
 
         const deletePhotoButton = document.querySelectorAll('.delete_photo');
@@ -327,6 +354,7 @@
                 } else {
                     ticketImageContainer.style.display = 'none';
                 }
+                {}
     
                 // enable or disable ticket status elements'
                 const editUtenteSegnalatoElement = document.getElementById('form_utente_segnalato');
@@ -386,7 +414,6 @@
               });
         }
     });
-    
         // view ticket button for non-admin users
         const viewNoteButton = document.querySelectorAll('.view-ticket');
         viewNoteButton.forEach(button => {
@@ -470,9 +497,9 @@
             acceptedFiles: ".png,.jpg,.jpeg",
             filesizeBase: 1000,
             dictDefaultMessage: "Rilascia le tue immagini per caricarle",
-            autoProcessQueue: false,
-            uploadMultiple: true,
-            parallelUploads: 10,
+            autoProcessQueue: false, // this tells dropzone not to automatically grab your files and send them away
+            uploadMultiple: true, // to be able to drag-and-drop a bunch of files at once
+            parallelUploads: 10, // this is how many files will try to upload at the same time
             init: function() {
                 const myDropzone = this;
                 document.getElementById('saveChangesButton').addEventListener('click', function(e) {
