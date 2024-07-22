@@ -25,6 +25,11 @@
 
 }
 
+.card .table tbody td:last-child, .card .table thead th:last-child {
+    padding-right: 15px;
+    display: none;
+}
+
 /******* magnifying glass icon styles *******/
 .transparent-button {
     background-color: transparent;
