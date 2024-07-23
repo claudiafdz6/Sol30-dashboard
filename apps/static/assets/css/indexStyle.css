@@ -5,13 +5,14 @@
     text-align: center;
     color: black;
     font-weight: bold;
+    border-right: 50px;
 }
 
 /* table style */
 .table thead tr th {
     color: black;
     font-weight: bold;
-    margin:2em;
+    margin: 2em;
 }
 
 .table tbody td {
@@ -127,4 +128,30 @@ textarea {
 .tagify--outside.tagify--focus .tagify__input {
     transition: 0s;
     border-color: var(--tags-focus-border-color);
+}
+
+/******** Responsive *********/
+@media only screen and (max-width: 600px) {
+    .table thead tr th {
+        color: black;
+        font-weight: bold;
+    }
+
+    .table tbody td {
+        color: black;
+        justify-content: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;  /**** limit amount of text visible in a column ****/
+        max-width: 5px;
+        overflow: hidden;
+        margin-bottom: 200px;
+    }
+
+    #ticketsTable {
+        margin-left: 500px;
+        margin-right: 500px;
+
+    }
+
 }

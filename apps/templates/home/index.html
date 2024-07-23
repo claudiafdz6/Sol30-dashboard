@@ -54,6 +54,7 @@
                                     <th>Tag</th>
                                     <th>Data Apertura</th>
                                     <th>Data Chiusura</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,6 +81,7 @@
                                     <td>{{ ticket.tag }}</td>
                                     <td>{{ ticket.formatted_data_apertura() }}</td>
                                     <td>{{ ticket.formatted_data_chiusura() }}</td>
+                                    <td></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -287,7 +289,7 @@
             searching: true,
             responsive: true,
         columnDefs: [
-            { 
+            {
                 orderable: false, 
                 targets: 0 // Disable ordering for the first column
             }
