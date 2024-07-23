@@ -100,6 +100,12 @@ textarea {
     transition: .2s; 
 }
 
+/******* progress percentage bar  ********/
+.dropzone .dz-preview .dz-progress {
+    top: 115% !important;
+    background: rgba(0,0,255,90%) !important;
+  }
+
 /****** Tagify (tags) *******/
 
 #tags-outside {
